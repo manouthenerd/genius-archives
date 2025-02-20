@@ -9,16 +9,16 @@ Route::get('/', function () {
     return Inertia::render('Home', []);
 });
 
-Route::post('/', function (Request $request) {
-    dd($request);
-});
-
 Route::get('/mes-archives', function () {
     return Inertia::render('Archives', []);
 });
 
 Route::get('/nouvelle-archive', function () {
-    return Inertia::render('Archives', []);
+    return Inertia::render('CreateArchive', []);
+});
+
+Route::post('/nouvelle-archive', function (Request $request) {
+    dd($request->all(), $request->file());
 });
 
 Route::get('/parametres', function () {
@@ -31,9 +31,9 @@ Route::get('/parametres/edit', function () {
 
 
 // Route::middleware('auth')->group(function () {
-//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+//     Route::get('/profile', [SettingsController::class, 'edit'])->name('profile.edit');
+//     Route::patch('/profile', [SettingsController::class, 'update'])->name('profile.update');
+//     Route::delete('/profile', [SettingsController::class, 'destroy'])->name('profile.destroy');
 // });
 
 require __DIR__.'/auth.php';

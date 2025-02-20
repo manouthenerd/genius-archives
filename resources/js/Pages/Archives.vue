@@ -36,13 +36,14 @@
                                 </Link>
                             </p>
                             <div class="flex justify-between items-center mt-4 transition-all">
-                                <Link href="#" class="w-3/4 text-center ring-1 rounded-sm">Modifier</Link>
+                                <Link href="#" class="w-3/4 text-center ring-1 ring-black rounded-sm">Modifier</Link>
                                 <Link href="#" class="w-1/4 ">
                                     <img title="supprimer" src="/icons/delete.svg" alt=" trash svg" class="float-right">
                                 </Link>
                             </div>
                         </div>
                     </div>
+
                 </div>
 
             </section>

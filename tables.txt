@@ -1,0 +1,18 @@
+Document
+    -id
+    -user_id
+    -name
+    -type
+    -path
+    -tags
+    -content || description
+    -category
+    -extension
+
+User
+    -id
+    -username
+    -email
+    -password
+
+Database: web_archives

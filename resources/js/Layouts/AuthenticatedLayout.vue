@@ -82,7 +82,7 @@
         
         <div class="px-4 h-screen overflow-scroll rounded-sm w-full size-[50%] bg-[whitesmoke] shadow-lg shadow-black">
             <header class="sticky top-0 z-999">
-                <div class="flex flex-wrap justify-between items-center bg-white p-2">
+                <div class="flex flex-wrap-reverse gap-4 justify-between items-center bg-white p-2">
                     <div class="flex gap-2 items-center">
                         <button @click="resize">
                             <img src="/icons/menu.svg" alt="menu icon">
