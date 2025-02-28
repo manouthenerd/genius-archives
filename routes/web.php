@@ -14,18 +14,35 @@ Route::get('/mes-archives', function () {
 });
 
 Route::get('/nouvelle-archive', function () {
-    return Inertia::render('CreateArchive', []);
+    return Inertia::render('Archives/CreateArchive', []);
 });
 
 Route::post('/nouvelle-archive', function (Request $request) {
     dd($request->all(), $request->file());
 });
 
+Route::get('/nouveau-membre', function (Request $request) {
+    return Inertia::render('Member/CreateMember');
+});
+
+Route::get('/mes-membres', function (Request $request) {
+    return Inertia::render('Member/Members');
+});
+
+Route::get('/historique', function (Request $request) {
+    return Inertia::render('History');
+});
+
 Route::get('/parametres', function () {
     return Inertia::render('Settings', []);
 });
+
 Route::get('/parametres/edit', function () {
     return Inertia::render('Settings', []);
+});
+
+Route::get('/corbeille', function () {
+    return Inertia::render('Trash', []);
 });
 
 

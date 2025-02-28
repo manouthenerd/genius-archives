@@ -1,5 +1,6 @@
 <template>
     <AuthenticatedLayout>
+        <Head title="Dashboard"/>
         <div class="grid">
             <div id="charts" class="px-2 bg-army overflow-x-scroll overflow-auto flex flex-wrap gap-4 justify-between items-center min-h-10">
                 <Tag title="Mix" href="#" :counter="100" />
@@ -7,6 +8,7 @@
                 <Tag title="EXCEL" href="#" :counter="22" />
                 <Tag title="WORD" href="#" :counter="22" />
             </div>
+            
             <!-- Charts -->
             <div  class="mt-8">
                 <SectionHead title="Statistiques de vos archives" />
@@ -21,7 +23,78 @@
                         <canvas id="last-canvas"></canvas>
                     </div>
                 </div>
-            </div>            
+            </div> 
+            
+             <!-- History -->
+             <div class="mt-2">
+                <SectionHead title="Résumé de votre historique" />
+                <div class="h-[200px] overflow-y-scroll p-2 rounded-md bg-white shadow-inner shadow-lightGray">
+                    <div class="h-full">
+                        <p class="text-left  rounded-md flex justify-end">
+                            <span class="flex gap-1 items-center font-bold shadow-lg">
+                                <Cpu size="16px" color="#2563eb"/> 200 Mo utilisée
+                            </span>
+                        </p>
+                        <div class="space-y-2">
+                            <table class="table-auto w-full mt-2">
+                                <thead class="w-full bg-slate-400 z-[999]">
+                                    <tr class="flex justify-between items-center w-full">
+                                        <th class="w-1/3 ">Profil</th>
+                                        <th class="w-1/3 ">Pseudo</th>
+                                        <th class="w-1/3 ">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="w-full">
+                                    <Link href="#">
+                                        <tr class="flex justify-between items-center p-2  border rounded-sm">
+                                            <td class="flex w-1/3 text-center justify-center">
+                                                <img 
+                                                    class="size-[50px] rounded-full"
+                                                    src="/image/profile.jpg" 
+                                                    alt="profile picture"
+                                                >
+                                                <span class="size-[8px] rounded-full bg-green-400"></span>
+                                            </td class="w-1/3 text-center">
+                                            <td class="w-1/3 text-center">Jhon Doe</td>
+                                            <td class="w-1/3 text-center">en ligne • <i>actuellement</i></td>
+                                        </tr>
+                                    </Link>
+
+                                    <Link href="#">
+                                        <tr class="flex justify-between items-center p-2  border rounded-sm">
+                                            <td class="flex w-1/3 text-center justify-center">
+                                                <img 
+                                                    class="size-[50px] rounded-full"
+                                                    src="/image/profile.jpg" 
+                                                    alt="profile picture"
+                                                >
+                                                <span class="size-[8px] rounded-full bg-green-400"></span>
+                                            </td class="w-1/3 text-center">
+                                            <td class="w-1/3 text-center">Jhon Doe</td>
+                                            <td class="w-1/3 text-center">en ligne • <i>actuellement</i></td>
+                                        </tr>
+                                    </Link>
+
+                                    <Link href="#">
+                                        <tr class="flex justify-between items-center p-2  border rounded-sm">
+                                            <td class="flex w-1/3 text-center justify-center">
+                                                <img 
+                                                    class="size-[50px] rounded-full"
+                                                    src="/image/profile.jpg" 
+                                                    alt="profile picture"
+                                                >
+                                                <span class="size-[8px] rounded-full bg-red-400"></span>
+                                            </td class="w-1/3 text-center">
+                                            <td class="w-1/3 text-center">Jhon Doe</td>
+                                            <td class="w-1/3 text-center">hors ligne • <i>il y a 5min</i></td>
+                                        </tr>
+                                    </Link>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </AuthenticatedLayout>
@@ -33,7 +106,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Tag from '@/Components/Tag.vue';
 import SectionHead from '@/Components/SectionHead.vue';
 import { onMounted } from "vue";
-import { Link } from "@inertiajs/vue3";
+import { Link, Head } from "@inertiajs/vue3";
+import { Cpu } from "lucide-vue-next";
+
 
 onMounted(() => {
     const firstCanvas = document.querySelector("#first-canvas");
@@ -95,4 +170,15 @@ onMounted(() => {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+tbody tr{
+    background-color: #f1f5f9 ;
+}
+
+tbody tr:hover {
+    transition: .5s background-color;
+    background-color: #fff ;
+}
+
+
 </style>

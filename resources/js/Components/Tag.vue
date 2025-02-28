@@ -1,7 +1,7 @@
 <template>
     <Link :href class="flex rounded-md shadow-sm gap-1 p-1 items-center h-[25px] bg-[lightGray]">
     {{ title }}
-    <img src="/icons/tag.svg" alt="tag icon">
+    <Tag size="20px"/>
     <span
         class="flex justify-center text-[14px] items-center min-h-[20px] min-w-[20px] rounded-full bg-[darkOrange]">{{ counter }}</span>
     </Link>
@@ -9,6 +9,7 @@
 
 <script setup>
 import { Link } from '@inertiajs/vue3';
+import { Tag } from 'lucide-vue-next';
 
 defineProps({
     title: {

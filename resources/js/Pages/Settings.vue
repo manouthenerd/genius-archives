@@ -1,6 +1,7 @@
 <template>
 
     <AuthenticatedLayout>
+        <Head title="Paramètres"/>
         <section class="bg-white mt-8">
             <div class="flex flex-wrap items-center justify-between ">
                 <SectionHead title="Informations du profil" />
@@ -125,7 +126,7 @@
 </template>
 
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Link, Head } from '@inertiajs/vue3';
 import SectionHead from '@/Components/SectionHead.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { useIsUrl } from '@/composables/isUrl';

@@ -1,20 +1,63 @@
-<script setup>
-import Checkbox from '@/Components/Checkbox.vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+<template>
 
-defineProps({
-    canResetPassword: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
+    <Head title="Connexion" />
+    <GuestLayout>
+        <div class="max-w-[300px] h-full bg-[url(/image/background.svg)] bg-cover">
+            <form
+                class="h-full flex flex-col justify-around border border-solid border-slate-200 p-2 rounded-sm space-y-4">
+                <p class="text-center text-white bg-black p-0.5 rounded border border-solid border-[aliceblue]">
+                    Page de connexion
+                </p>
+                <div class="space-y-4">
+                    <ModalItem>
+                        <label for="email" class="text-white">Adresse email</label>
+                        <Input class="border border-slate-200 focus:outline-none focus:border-0" type="email" id="email"
+                            name="email" />
+                    </ModalItem>
+                    <ModalItem>
+                        <label for="password" class="text-white">Mot de passe</label>
+                        <Input class="border border-slate-200 focus:outline-none focus:border-0" type="password"
+                            id="password" name="password" />
+                    </ModalItem>
+                    <p class="text-xs text-white">
+                        Pas de compte ? 
+                        <Link href="/inscription" class="text-blue-500">Créer un compte</Link>
+                    </p>
+                    <p class="text-xs text-white">
+                        Mot de passe oublié ? 
+                        <Link href="/reintialisation-mot-de-passe" class="text-blue-500">Réintialiser mon mot de passe</Link>
+                    </p>
+                    <ModalItem>
+                        <input type="submit" value="Se connecter"
+                            class="bg-blue-500 hover:opacity-90 transition-opacity text-center font-bold text-white p-2 rounded" />
+                    </ModalItem>
+                </div>
+            </form>
+        </div>
+
+        <div class="max-w-[300px] h-full bg-[url(/image/background.svg)] bg-cover">
+
+            <div id="skew-box"
+                class="h-full w-[262px] flex flex-col justify-around border border-solid border-slate-200 text-white font-bold p-2 rounded-sm space-y-4">
+                <div class="text-center text-white bg-black p-0.5 rounded ">
+                    <p>
+                        Genius <span class="text-blue-500">Archives</span>
+                    </p>
+                    
+                </div>
+                
+            </div>
+
+        </div>
+    </GuestLayout>
+</template>
+
+<script setup>
+import ModalItem from '@/Components/modals/ModalItem.vue';
+import Input from '@/Components/forms/Input.vue';
+import { Head, Link, useForm } from '@inertiajs/vue3';
+import GuestLayout from '@/Layouts/GuestLayout.vue';
+
 
 const form = useForm({
     email: '',
@@ -29,72 +72,32 @@ const submit = () => {
 };
 </script>
 
-<template>
-    <GuestLayout>
-        <Head title="Log in" />
+<style scoped>
+form,
+#skew-box {
+    transition: all 1s;
+}
 
-        <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
-            {{ status }}
-        </div>
+form {
+    align-content: center;
+    transform: skewY(16deg);
+    border-top-right-radius: 20px;
+}
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
+#skew-box {
+    transform: skewY(-16deg);
+    border-top-left-radius: 20px;
+}
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
+#parent:hover form {
+    transform: skewY(0);
+    border-right: transparent;
+    border-top-right-radius: 0;
+}
 
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4 block">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600 dark:text-gray-400"
-                        >Remember me</span
-                    >
-                </label>
-            </div>
-
-            <div class="mt-4 flex items-center justify-end">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                >
-                    Forgot your password?
-                </Link>
-
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Log in
-                </PrimaryButton>
-            </div>
-        </form>
-    </GuestLayout>
-</template>
+#parent:hover #skew-box {
+    border-left: transparent;
+    transform: skewY(0);
+    border-top-left-radius: 0;
+}
+</style>
