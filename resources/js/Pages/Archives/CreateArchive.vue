@@ -1,6 +1,5 @@
 <template>
 
-    <AuthenticatedLayout>
         <div>
             <SectionHead title="Ajouter un nouveau document" />
 
@@ -88,17 +87,20 @@
 
             </div>
         </div>
-    </AuthenticatedLayout>
 
 </template>
 
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import MainLayout from '@/Layouts/MainLayout.vue';
 import SectionHead from '@/Components/SectionHead.vue';
 import Note from '@/Components/Note.vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import Input from "@/Components/forms/Input.vue"
 import { Trash } from 'lucide-vue-next';
+
+defineOptions({
+    layout: MainLayout
+})
 
 const fileForm = useForm({
     title: null,

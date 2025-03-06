@@ -26,7 +26,7 @@
                             <div class="flex justify-between">
                                 <Input class="w-[75%]" id="password" name="password" placeholder="Entrer le code ici" />
                                 <Input type="image" class="border-slate-500 bg-slate-300 rounded "
-                                    src="/icons/generate-password.svg" alt="icon for password genenration" />
+                                    src="/icons/generate-password.svg" alt="icon for password generation" />
                             </div>
                             <Note class="mt-2" text="Ce code vous permettra d'accéder à ce dossier" />
 

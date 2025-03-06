@@ -1,14 +1,20 @@
 <template>
     <p class="bg-yellow-500 size-[50px] flex justify-center items-center rounded-full font-bold capitalize">
-        {{ firstname.at(0) + lastname.at(0) }}
+        {{ userInitial() }}
     </p>
 </template>
 
 <script setup>
-defineProps({
-    firstname: String,
-    lastname: String
+const props = defineProps({
+    name: String
 })
 
+const userInitial = () => {
 
+    const [first, last] = props.name ? props.name.split(' ') : "Guest User".split(' ')
+
+    const userInitial = first[0] + last[0]
+
+    return userInitial
+}
 </script>

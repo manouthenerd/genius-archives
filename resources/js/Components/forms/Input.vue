@@ -1,5 +1,6 @@
 <template>
     <input :type 
+        required
         v-model="model"
         class="rounded-sm outline-none focus:outline-none border-slate-200">
 </template>

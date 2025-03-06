@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterUserRequest;
+use App\Models\AccessKey;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -28,24 +30,35 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(RegisterUserRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+        
+        $validated = $request->validated();
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        $access_key = AccessKey::where('key', '=', $validated['access_key'])->first();
 
-        event(new Registered($user));
+        if( (bool) $access_key->user_id ) {
 
-        Auth::login($user);
+            
+            $user = User::create([
+                'name'      => $validated['name'],
+                'email'     => $validated['email'],
+                'password'  => Hash::make($validated['password']) ,
+                'role'      => 'administrateur',
+            ]);
+            
+            event(new Registered($user));
+            
+            Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+            $access_key->user_id = $user->id;
+
+            $access_key->save();
+
+            return redirect(route('dashboard', absolute: false));
+        }
+
+        return redirect()->back()->withErrors("La clé d'accès a été déjà utilisée");
+
     }
 }

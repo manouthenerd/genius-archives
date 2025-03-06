@@ -5,8 +5,10 @@ namespace App\Http\Requests\Auth;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ConditionalRules;
 use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
@@ -27,8 +29,25 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'email'     => ['required', 'email'],
+            'password'  => ['required', 'min:8'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'email.required'        => "L'adresse email est obligatoire",
+            'email.email'           => "Entrer une adresse email valide",
+            'password.required'     => "Le mot de passe est obligatoire",
+            'password.min'          => "Le mot de passe doit être d'au moins :min caractère",
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'password'  => 'mot de passe'
         ];
     }
 

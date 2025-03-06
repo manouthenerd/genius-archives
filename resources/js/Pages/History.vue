@@ -1,5 +1,4 @@
 <template>
-    <AuthenticatedLayout>
         <Head title="Historique"/>
 
         <!-- <div class="w-full space-y-4">
@@ -80,12 +79,15 @@
                 </div>
             </div>
         </div>
-    </AuthenticatedLayout>
 </template>
 
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import MainLayout from '@/Layouts/MainLayout.vue';
 import SectionHead from '@/Components/SectionHead.vue';
 import { Unplug } from 'lucide-vue-next';
 import { Head } from '@inertiajs/vue3';
+
+defineOptions({
+    layout: MainLayout
+})
 </script>

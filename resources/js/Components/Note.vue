@@ -1,5 +1,5 @@
 <template>
-    <p class="w-full p-[2px] rounded text-justify text-nowrap bg-[#ffa5005e] grid">
+    <p class="tex-xs w-full p-[2px] rounded text-justify text-nowrap bg-[#ffa5005e] grid">
         <span class="flex items-center text-xs font-bold uppercase"><img src="/icons/danger.svg" alt="danger icon">Note</span>
         <span id="text" class="overflow-scroll scrollbar-hide">
             {{ text }}

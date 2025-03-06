@@ -1,9 +1,9 @@
 <template>
 
     <Head title="Connexion" />
-    <GuestLayout>
         <div class="max-w-[300px] h-full bg-[url(/image/background.svg)] bg-cover">
             <form
+                @submit.prevent="submit()"
                 class="h-full flex flex-col justify-around border border-solid border-slate-200 p-2 rounded-sm space-y-4">
                 <p class="text-center text-white bg-black p-0.5 rounded border border-solid border-[aliceblue]">
                     Page de connexion
@@ -11,13 +11,34 @@
                 <div class="space-y-4">
                     <ModalItem>
                         <label for="email" class="text-white">Adresse email</label>
-                        <Input class="border border-slate-200 focus:outline-none focus:border-0" type="email" id="email"
-                            name="email" />
+                        <Input 
+                            v-model="form.email"
+                            name="email"
+                            type="email" id="email"
+                            class="border border-slate-200 focus:outline-none focus:border-0"
+                        />
+                        <Error 
+                            v-if="form.errors.email"
+                            :message="form.errors.email"
+                            />
                     </ModalItem>
                     <ModalItem>
                         <label for="password" class="text-white">Mot de passe</label>
-                        <Input class="border border-slate-200 focus:outline-none focus:border-0" type="password"
-                            id="password" name="password" />
+                        <Input 
+                            v-model="form.password"
+                            id="password"
+                            type="password" 
+                            name="password"
+                            class="border border-slate-200 focus:outline-none focus:border-0" 
+                        />
+                        <Error 
+                            v-if="form.errors.password" 
+                            :message="form.errors.password"
+                        />
+                        <Error 
+                            v-if="form.errors[0]" 
+                            :message="form.errors[0]"
+                        />
                     </ModalItem>
                     <p class="text-xs text-white">
                         Pas de compte ? 
@@ -28,8 +49,7 @@
                         <Link href="/reintialisation-mot-de-passe" class="text-blue-500">Réintialiser mon mot de passe</Link>
                     </p>
                     <ModalItem>
-                        <input type="submit" value="Se connecter"
-                            class="bg-blue-500 hover:opacity-90 transition-opacity text-center font-bold text-white p-2 rounded" />
+                        <SubmitButton :disabled="form.processing" value="Se connecter"/>
                     </ModalItem>
                 </div>
             </form>
@@ -49,7 +69,6 @@
             </div>
 
         </div>
-    </GuestLayout>
 </template>
 
 <script setup>
@@ -57,20 +76,25 @@ import ModalItem from '@/Components/modals/ModalItem.vue';
 import Input from '@/Components/forms/Input.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
+import SubmitButton from '@/Components/forms/SubmitButton.vue';
+import Error from '@/Components/forms/Error.vue';
 
+defineOptions({
+    layout: GuestLayout
+})
 
 const form = useForm({
     email: '',
     password: '',
-    remember: false,
 });
 
-const submit = () => {
-    form.post(route('login'), {
-        onFinish: () => form.reset('password'),
-    });
-};
+
+function submit() {
+    form.post('/connexion')
+}
+
 </script>
+
 
 <style scoped>
 form,
@@ -80,12 +104,12 @@ form,
 
 form {
     align-content: center;
-    transform: skewY(16deg);
+    transform: skewY(-16deg);
     border-top-right-radius: 20px;
 }
 
 #skew-box {
-    transform: skewY(-16deg);
+    transform: skewY(18deg);
     border-top-left-radius: 20px;
 }
 

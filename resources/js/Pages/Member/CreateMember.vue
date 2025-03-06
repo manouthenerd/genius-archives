@@ -1,6 +1,7 @@
 <template>
-    <Head title="Ajouter un membre"/>
+    
     <Modal @close-event="createMemberModal.closeModal()" v-show="createMemberModal.isClosed == false" title="Ajouter un nouveau membre">
+        <Head title="Ajouter un membre"/>
             <div class="max-w-[450px] flex">
                 <form class="space-y-4">
                     <ModalItem>

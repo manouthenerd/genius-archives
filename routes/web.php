@@ -1,56 +1,56 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AccessKeyGeneratorController;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AccessKeysController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\TrashController;
 
-Route::get('/', function () {
-    return Inertia::render('Home', []);
+Route::middleware('auth')->group(function() {
+
+    Route::get('/', [HomeController::class, 'index'])->name('dashboard');
+
+    Route::get('/mes-archives', function () {
+        return Inertia::render('Archives', []);
+    });
+    
+    Route::get('/nouvelle-archive', function () {
+        return Inertia::render('Archives/CreateArchive', []);
+    });
+    
+    Route::post('/nouvelle-archive', function (Request $request) {
+        dd($request->all(), $request->file());
+    });
+    
+    Route::get('/nouveau-membre', function (Request $request) {
+        return Inertia::render('Member/CreateMember');
+    });
+    
+    Route::get('/mes-membres', function (Request $request) {
+        return Inertia::render('Member/Members');
+    });
+    
+    Route::get('/historique', function (Request $request) {
+        return Inertia::render('History');
+    });
+    
+    Route::get('/parametres', [SettingsController::class, 'index'])->name('settings');
+    Route::get('/parametres/edit', [SettingsController::class, 'index']);
+    
+    Route::get('/corbeille', [TrashController::class, 'index']);
+
 });
 
-Route::get('/mes-archives', function () {
-    return Inertia::render('Archives', []);
-});
+Route::middleware('auth')->group(function () {
 
-Route::get('/nouvelle-archive', function () {
-    return Inertia::render('Archives/CreateArchive', []);
-});
+    Route::get('/mes-cles', [AccessKeysController::class, 'index'])->name('access-keys');
+    Route::get('/nouvelle-clee', [AccessKeysController::class, 'create'])->name('access-keys.create');
+    Route::post('/nouvelle-clee', [AccessKeysController::class, 'store'])->name('access-keys.create');
+    Route::get('/access-key-generator', AccessKeyGeneratorController::class);
 
-Route::post('/nouvelle-archive', function (Request $request) {
-    dd($request->all(), $request->file());
-});
-
-Route::get('/nouveau-membre', function (Request $request) {
-    return Inertia::render('Member/CreateMember');
-});
-
-Route::get('/mes-membres', function (Request $request) {
-    return Inertia::render('Member/Members');
-});
-
-Route::get('/historique', function (Request $request) {
-    return Inertia::render('History');
-});
-
-Route::get('/parametres', function () {
-    return Inertia::render('Settings', []);
-});
-
-Route::get('/parametres/edit', function () {
-    return Inertia::render('Settings', []);
-});
-
-Route::get('/corbeille', function () {
-    return Inertia::render('Trash', []);
-});
-
-
-
-// Route::middleware('auth')->group(function () {
-//     Route::get('/profile', [SettingsController::class, 'edit'])->name('profile.edit');
-//     Route::patch('/profile', [SettingsController::class, 'update'])->name('profile.update');
-//     Route::delete('/profile', [SettingsController::class, 'destroy'])->name('profile.destroy');
-// });
+})->name('superadmin');
 
 require __DIR__.'/auth.php';
