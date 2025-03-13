@@ -15,8 +15,7 @@ return new class extends Migration
         Schema::create('access_keys', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->nullable()->constrained()->cascadeOnDelete();
-            $table->text('key');
-            $table->integer('lifetime');
+            $table->uuid('key');
             $table->integer('disk_space');
             $table->timestamps();
         });

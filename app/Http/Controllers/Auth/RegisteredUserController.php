@@ -37,28 +37,28 @@ class RegisteredUserController extends Controller
 
         $access_key = AccessKey::where('key', '=', $validated['access_key'])->first();
 
-        if( (bool) $access_key->user_id ) {
-
+        if( $access_key->user_id !== null) {
             
-            $user = User::create([
-                'name'      => $validated['name'],
-                'email'     => $validated['email'],
-                'password'  => Hash::make($validated['password']) ,
-                'role'      => 'administrateur',
-            ]);
-            
-            event(new Registered($user));
-            
-            Auth::login($user);
-
-            $access_key->user_id = $user->id;
-
-            $access_key->save();
-
-            return redirect(route('dashboard', absolute: false));
+            return redirect()->back()->withErrors("La clé d'accès a été déjà utilisée", 'incorrect_key');
         }
 
-        return redirect()->back()->withErrors("La clé d'accès a été déjà utilisée");
+        $user = User::create([
+            'name'      => $validated['name'],
+            'email'     => $validated['email'],
+            'password'  => Hash::make($validated['password']) ,
+            'role'      => 'administrateur',
+        ]);
+        
+        event(new Registered($user));
+        
+        Auth::login($user);
+
+        $access_key->user_id = $user->id;
+
+        $access_key->save();
+
+        return redirect(route('dashboard', absolute: false));
+
 
     }
 }

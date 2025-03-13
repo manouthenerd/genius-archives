@@ -2,7 +2,7 @@
 
     <div
         class="backdrop-blur-sm flex justify-center items-center h-screen w-screen fixed overflow-auto z-100 left-0 top-0 bg-[rgba(0,0,0,0.4)] rounded-sm border">
-        <div class="space-y-4 mx-3 shadow-sm p-4 grid rounded w-[600px] bg-slate-50">
+        <div class="bg-gradient-to-r from-slate-100 to-orange-50 via-blue-100 space-y-4 mx-3 shadow-sm p-4 grid rounded w-[550px] bg-slate-50">
 
             <div class="flex justify-between items-center">
 

@@ -96,7 +96,7 @@
 </template>
 
 <script setup>
-import { Link, useForm } from '@inertiajs/vue3';
+import { Link, useForm, usePage } from '@inertiajs/vue3';
 import SuperAdminLayout from '@/Layouts/SuperAdminLayout.vue';
 import ModalItem from '@/Components/modals/ModalItem.vue';
 import Input from '@/Components/forms/Input.vue';
@@ -131,7 +131,7 @@ const isFilled = computed(() => {
 
 const generateAccessKey = () => {
     form.key = props.access_key
-    useForm().get('/access-key-generator', {preserveState: true});
+    useForm().get(usePage().url, {preserveState: true});
 }
 
 const submit = () => {

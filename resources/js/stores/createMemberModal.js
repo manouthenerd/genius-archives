@@ -1,7 +1,7 @@
 import { defineStore } from "pinia"
 import { ref } from "vue"
 
-export const useCreateMemberModal = defineStore('createMemberModal', () => { 
+export const useCreateMemberModalStore = defineStore('createMemberModal', () => { 
 
     const isClosed = ref(true)
 

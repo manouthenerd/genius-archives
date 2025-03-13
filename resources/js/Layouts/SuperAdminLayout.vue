@@ -103,7 +103,7 @@
                 </div>
             </header>
 
-            <main class="bg-white mt-2">
+            <main class="bg-white mt-5">
                 <slot />
             </main>
         </div>

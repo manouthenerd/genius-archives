@@ -23,7 +23,9 @@ class AccessKeysController extends Controller
 
     public function create()
     {
-        return Inertia::render('Superadmin/CreateAccessKey');
+        define('ACCESS_KEY', Str::uuid());
+        
+        return Inertia::render('Superadmin/CreateAccessKey', ['access_key' => ACCESS_KEY]);
     }
 
     public function store(AccessKeysRequest $request): RedirectResponse

@@ -26,7 +26,7 @@
                             <summary class="flex gap-2 items-center text-white"
                                 :class="useIsComponent('Archives') ? styles : ''">
                                 <FolderArchive color="#2563eb" />
-                                Mes archives
+                                Mes Dossiers
                                 <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960"
                                     width="30px" fill="#fff">
                                     <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
@@ -34,10 +34,29 @@
                             </summary>
 
                             <ul class="flex flex-col items-center gap-2 text-white">
+                                <li v-if="user">
+                                    <ul class="text-[14px] text-slate-300">
+                                        <li v-for="folder in user_folders ">
+                                            <Link :href="'/folders/' + folder.id">
+                                                {{ folder.name }}
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li v-if="member">
+                                    <ul class="text-[14px] text-slate-300">
+                                        <li v-for="folder in member_folders ">
+                                            <Link :href="'/folders/' + folder.id">
+                                                {{ folder.name }}
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </li>
                                 <li>
                                     <button type="button" @click.prevent="foldersModalStore.openModal()"
                                         class="flex items-center">
-                                        <FolderPlus class="text-slate-300" />
+                                        <FolderPlus size="20" class="text-slate-300" />
                                         Nouveau dossier
                                     </button>
 
@@ -111,7 +130,7 @@
             </div>
         </aside>
 
-        <div class="px-4 h-screen overflow-scroll rounded-sm w-full size-[50%] bg-[whitesmoke] shadow-lg shadow-black">
+        <div class="px-4 h-screen overflow-scroll rounded-sm w-full size-[50%] bg-gradient-to-r from-slate-100 to-orange-50 via-blue-100 shadow-lg shadow-black">
             <header class="sticky top-0 z-999">
                 <div class="flex flex-wrap-reverse gap-4 justify-between items-center bg-white p-2">
                     <div class="flex gap-2 items-center">
@@ -130,18 +149,16 @@
 
                     <div class="flex gap-4 items-center">
 
-                        <input @click="rotate" id="theme-button" type="image" src="/icons/light.svg" />
-
-                        <ProfilePicture :name="user.name" />
+                        <ProfilePicture :name="user.name ?? member.name" />
                         <ul>
-                            <li>{{ user.name ?? 'anonymous' }}</li>
-                            <li class="text-lightGray">{{ user.role ?? 'guest-user' }}</li>
+                            <li>{{ user.name ?? member.name }}</li>
+                            <li class="text-lightGray">{{ user.role ?? member.role }}</li>
                         </ul>
                     </div>
                 </div>
             </header>
 
-            <main class="bg-white mt-2">
+            <main class="bg-white mt-[20px] bg-gradient-to-r from-slate-100 to-orange-50 via-blue-100">
                 <Transition>
                     <FolderModal />
                 </Transition>
@@ -167,9 +184,8 @@ import SearchModal from '@/Components/modals/SearchModal.vue';
 import CreateMember from '@/Pages/Member/CreateMember.vue';
 import { useSearchModalStore } from '@/stores/searchModal';
 import { useFoldersModalStore } from '@/stores/foldersModal';
-import { useCreateMemberModal } from '@/stores/createMemberModal';
+import { useCreateMemberModalStore } from '@/stores/createMemberModal';
 import {
-    Bell,
     LayoutGrid,
     Settings,
     Trash2Icon,
@@ -186,10 +202,14 @@ import {
 } from 'lucide-vue-next';
 
 const user = usePage().props.auth.user
+const member = usePage().props.auth.member
+
+const user_folders = usePage().props.auth.user_folders;
+const member_folders = usePage().props.auth.member_folders;
 
 const foldersModalStore = useFoldersModalStore()
 const searchModal = useSearchModalStore()
-const createMemberModal = useCreateMemberModal()
+const createMemberModal = useCreateMemberModalStore()
 
 const date = ref(new Date().getFullYear())
 
@@ -199,12 +219,6 @@ const resize = () => {
     const aside = document.querySelector('aside')
 
     aside.classList.toggle('w-[300px]')
-}
-
-const rotate = () => {
-    const aside = document.querySelector('#theme-button')
-
-    aside.classList.toggle('rotate-button')
 }
 
 const isAdmin = computed(() => {

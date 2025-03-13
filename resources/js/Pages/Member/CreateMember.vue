@@ -3,55 +3,89 @@
     <Modal @close-event="createMemberModal.closeModal()" v-show="createMemberModal.isClosed == false" title="Ajouter un nouveau membre">
         <Head title="Ajouter un membre"/>
             <div class="max-w-[450px] flex">
-                <form class="space-y-4">
+                <form 
+                    @submit.prevent="submit" 
+                    class="space-y-2"
+                >
                     <ModalItem>
-                        <label for="identifier">Identifiant ou Email</label>
-                        <Input name="identifier" id="identifier" placeholder="Entrer l'ID ou l'email" />
+                        <label for="email">Nom et prénoms</label>
+                        <Input 
+                            v-model="member.name"
+                            name="name" 
+                            id="name" 
+                            placeholder="Entrer le nom et prénoms" 
+                        />
+                        <Error :message="member.errors.name"/>
+                    </ModalItem>
+
+                    <ModalItem>
+                        <label for="email">Adresse email</label>
+                        <Input 
+                            v-model="member.email"
+                            type="email" 
+                            name="email" 
+                            id="email" 
+                            placeholder="Entrer l'adresse email" 
+                        />
+                        <Error :message="member.errors.email"/>
                     </ModalItem>
 
                     <ModalItem>
                         <label for="password">Mot de passe</label>
-                        <Input name="password" id="password" placeholder="Entrer le mot de passe" />
+                        <Input 
+                            type="password"
+                            v-model="member.password"
+                            name="password" 
+                            id="password" 
+                            placeholder="Entrer le mot de passe" 
+                        />
+                        <Error :message="member.errors.password"/>
                     </ModalItem>
 
                     <ModalItem>
-                        <label for="role">Rôle du nouveau membre</label>
-                        <select id="role" name="role"
-                            class="rounded-sm outline-none focus:outline-none border-slate-200 ">
-                            <option value="admin">administrateur</option>
-                            <option value="user">utilisateur</option>
-                        </select>
-                        <Note class="mt-2" text="Un membre avec le rôle 'administrateur' detient toutes les autorisations sauf restriction." />
-                    </ModalItem>
+                        <label for="disk_space">
+                            Quota d'espace associé
+                        </label>
+                        <div class="flex justify-between">
+                            <Input 
+                                v-model="member.disk_space"
+                                type="text" 
+                                id="disk_space" 
+                                min="0" 
+                                placeholder="Définir un quota d'espace..."
+                                class="w-[65%]" 
+                            />
+                            <Select class="w-[30%] rounded-sm outline-none focus:outline-none border-slate-200">
+                                <option value="Go">Go</option>
+                            </Select>
+                            
+                        </div>
+                        <Error
+                            v-if="member.errors.disk_space"
+                            :message="member.errors.disk_space"
+                        />
+                     </ModalItem>
 
                     <ModalItem class="space-y-2">
                         <label>Définition des autorisations</label>
-                            <label for="access" class="flex items-center gap-1">
-                                <input type="checkbox" name="access" id="access">
+                            <label id="access" class="flex items-center gap-1">
+                                <input 
+                                    v-model="member.can_view_private_folder" 
+                                    type="checkbox" 
+                                    name="access" 
+                                    for="access"
+                                >
                                 Peut accéder aux dossiers privés
-                            </label>
-                            <label for="can-create" class="flex items-center gap-1">
-                                <input type="checkbox" name="can-create" id="can-create">
-                                Peut créer d'autres membres.
-                            </label>
-                            <label for="can-edit" class="flex items-center gap-1">
-                                <input type="checkbox" name="can-edit" id="can-edit">
-                                Peut supprimer son compte.
-                            </label>
-                            <label for="can-edit" class="flex items-center gap-1">
-                                <input type="checkbox" name="can-edit" id="can-edit">
-                                Peut modifier son profil <i>(photo, ID et mot de passe.)</i>
                             </label>
                             
                     </ModalItem>
 
                     <ModalItem>
-                        <Link href="#" as="button" class="bg-blue-500 rounded-sm p-2 text-white flex justify-center items-center font-bold">
-                            Ajouter 
-                            <span>
-                                <UserRoundPlus color="#fff" size="15px"/>
-                            </span>
-                        </Link>
+                        <Button>
+                            <span v-if="! member.processing">Créer</span>
+                            <Loader v-if="member.processing" class="animate-spin"/>
+                        </Button>
+
                     </ModalItem>
                     
                 </form>
@@ -63,10 +97,31 @@
 import Input from '@/Components/forms/Input.vue';
 import Modal from '@/Components/modals/Modal.vue';
 import ModalItem from '@/Components/modals/ModalItem.vue';
-import Note from '@/Components/Note.vue';
-import { Link, Head } from '@inertiajs/vue3';
-import { UserRoundPlus } from 'lucide-vue-next';
-import { useCreateMemberModal } from '@/stores/createMemberModal';
+import { Head, useForm } from '@inertiajs/vue3';
+import { Loader } from 'lucide-vue-next';
+import { useCreateMemberModalStore } from '@/stores/createMemberModal';
+import Button from '@/Components/forms/Button.vue';
+import Error from '@/Components/forms/Error.vue';
 
-const createMemberModal = useCreateMemberModal()
+defineProps({status: String})
+
+const createMemberModal = useCreateMemberModalStore()
+
+const member = useForm({
+    name: "",
+    email: "",
+    password: "",
+    disk_space: "",
+    can_view_private_folder: false,
+})
+
+const submit = () => {
+    member.post('/nouveau-membre', {
+        onSuccess: () => member.reset()
+    })
+}
 </script>
+
+<style>
+
+</style>

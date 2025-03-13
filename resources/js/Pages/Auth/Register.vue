@@ -1,10 +1,10 @@
 <template>
-
+<GuestLayout height="h-[500px]">
     <Head title="Connexion" />
         <div class="max-w-[315px] h-full bg-[url(/image/background.svg)] bg-cover">
             <form
                 @submit.prevent="submit()"
-                class="flex flex-col h-full justify-around border border-solid border-slate-200 p-2 rounded-sm space-y-4">
+                class="flex min-w-[295px] flex-col h-full justify-around border border-solid border-slate-200 p-2 rounded-sm space-y-4">
                 <p class="text-center text-white border-b-transparent bg-black p-0.5 rounded border border-solid border-[aliceblue]">
                     Page d'inscription
                 </p>
@@ -17,7 +17,10 @@
                             type="text" id="name"
                             class="border border-slate-200 focus:outline-none focus:border-0"
                         />
-                        <Error :message="form.errors.name"/>
+                        <Error 
+                            v-if="form.errors"
+                            :message="form.errors.name"
+                        />
                     </ModalItem>
 
                     <ModalItem>
@@ -28,7 +31,10 @@
                             type="email" id="email"
                             class="border border-slate-200 focus:outline-none focus:border-0"
                         />
-                        <Error :message="form.errors.email"/>
+                        <Error
+                            v-if="form.errors" 
+                            :message="form.errors.email"
+                        />
                     </ModalItem>
 
                     <ModalItem>
@@ -40,7 +46,15 @@
                             name="access_key"
                             class="border border-slate-200 focus:outline-none focus:border-0"
                         />
-                        <Error :message="form.errors.access_key"/>
+                        <Error
+                            v-if="form.errors" 
+                            :message="form.errors.access_key"
+                        />
+
+                        <Error 
+                            v-if="form.errors.incorrect_key" 
+                            :message="form.errors.incorrect_key[0]"
+                        />
                     </ModalItem>
 
                     <ModalItem>
@@ -52,7 +66,7 @@
                             name="password"
                             class="border border-slate-200 focus:outline-none focus:border-0"
                         />
-                        <Error :message="form.errors.password"/>
+                        <Error v-if="form.errors" :message="form.errors.password"/>
                     </ModalItem>
 
                     <p class="text-xs text-white">
@@ -60,8 +74,16 @@
                         <Link href="/connexion" class="text-blue-500">Je me connecte</Link>
                     </p>
                     <ModalItem>
-                        <input type="submit" value="S'inscrire"
-                            class="bg-blue-500 z-[999] hover:opacity-90 transition-opacity text-center font-bold text-white p-2 rounded" />
+                        <Button>
+                        S'inscrire
+                        <Transition>
+                            <LoaderCircle 
+                                v-if="form.processing" 
+                                color="white"
+                                class="animate-spin"
+                            />
+                        </Transition>
+                     </Button>
                     </ModalItem>
                 </div>
             </form>
@@ -80,6 +102,7 @@
             </div>
 
         </div>
+    </GuestLayout>
 </template>
 
 <script setup>
@@ -88,10 +111,17 @@ import Input from '@/Components/forms/Input.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import Error from '@/Components/forms/Error.vue';
+import { LoaderCircle } from 'lucide-vue-next';
+import Button from '@/Components/forms/Button.vue';
 
 defineOptions({
     layout: GuestLayout
 })
+
+defineProps({
+    errors: Object
+})
+
 const form = useForm({
     name: '',
     email: '',

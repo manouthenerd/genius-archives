@@ -1,5 +1,7 @@
 <template>
-    <Modal @close-event="searchModal.closeModal()" :class="{ 'hidden': searchModal.isClosed }"
+    <Modal 
+        v-show="! searchModal.isClosed"
+        @close-event="searchModal.closeModal()"
         title="Barre de recherche">
         <ModalItem class="w-full">
             <Input class="my-2" type="text" name="search" id="search"

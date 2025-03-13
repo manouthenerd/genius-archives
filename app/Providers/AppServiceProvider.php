@@ -26,7 +26,5 @@ class AppServiceProvider extends ServiceProvider
     {
         Vite::prefetch(concurrency: 3);
 
-        Gate::policy(User::class, SuperAdminPolicy::class);
-        Gate::policy(User::class, UserPolicy::class);
     }
 }

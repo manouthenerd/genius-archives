@@ -44,13 +44,6 @@ class LoginRequest extends FormRequest
         ];
     }
 
-    public function attributes()
-    {
-        return [
-            'password'  => 'mot de passe'
-        ];
-    }
-
     /**
      * Attempt to authenticate the request's credentials.
      *
@@ -60,7 +53,26 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $user =  Auth::attempt(
+            $this->only('email', 'password'),
+            $this->boolean('remember')
+        );
+
+        $member = Auth::guard('member')->attempt(
+            $this->only('email', 'password'),
+            $this->boolean('remember')
+        );
+
+
+        if (! $user) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+            ]);
+        }
+
+        if (! $member) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -99,6 +111,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
     }
 }

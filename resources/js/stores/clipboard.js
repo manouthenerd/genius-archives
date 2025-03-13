@@ -5,8 +5,8 @@ export const useClipboard = defineStore('clipboard', () => {
 
     const status = ref(false)
 
-    const copyToClipboard = (el, e) => {
-        console.log(e.target)
+    const copyToClipboard = (el) => {
+        
         if(el.length) {
             navigator.clipboard.writeText(el)
             status.value = true

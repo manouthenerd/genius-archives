@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Illuminate\Support\Facades\DB;
+
 
 class HandleInertiaRequests extends Middleware
 {
@@ -29,11 +31,17 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user_id = $request->user() ? $request->user()->id : [];
+        $member_id = $request->user('member') ? $request->user('member')->id : [];
+
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user() ? $request->user()->only('name', 'role', 'email') : [],
-            ],
+                'user'              => $request->user('web') ? $request->user()->only('name', 'role', 'email') : [],
+                'member'            => $request->user('member') ? $request->user('member')->only('name', 'role', 'email', 'disk_space') : [],
+                'user_folders'      => $user_id ? DB::select('select id, name from folders where owner_id = ?', [$request->user()->id]) : [],
+                'member_folders'    => $member_id ? DB::select('select id, name from folders where owner_id = ?', [$request->user('member')->id]) : [],
+            ]
         ];
     }
 }

@@ -17,21 +17,21 @@
                     <div class="flex items-center gap-2 ">
 
                         <div class="flex ">
-                            <ProfilePicture :name="user.name" />
+                            <ProfilePicture :name="user.name ?? member.name" />
 
                             <!-- Visible if not edit page -->
                             <ul class="ml-2">
-                                <li v-show="useIsUrl('/parametres')">{{ user.name }}</li>
+                                <li v-show="useIsUrl('/parametres')">{{ user.name ?? member.name }}</li>
                                 <li v-show="useIsUrl('/parametres/edit')">
                                     <label for="username" class="flex gap-1">
                                         <input
                                             class="bg-white border-x-0 border-t-0 p-0 w-full rounded-sm focus:outline-0 border border-gray-300 outline-none"
-                                            type="text" name="username" id="username" :value="user.name"
+                                            type="text" name="username" id="username" :value="user.name ?? member.name"
                                             autocomplete="username">
                                         <img src="/icons/edit.svg" alt="edit icon">
                                     </label>
                                 </li>
-                                <li class="text-lightGray">{{ user.role }}</li>
+                                <li class="text-lightGray">{{ user.role ?? member.role }}</li>
                             </ul>
                         </div>
 
@@ -48,7 +48,7 @@
                             <label for="password">Adresse email</label>
                             <div>
                                 <input class="bg-[beige] w-full rounded-sm focus:outline-none border border-gray-300"
-                                    type="text" name="email" id="email" disabled :value="user.email">
+                                    type="text" name="email" id="email" disabled :value="user.email ?? member.email">
                             </div>
                         </div>
 
@@ -120,6 +120,7 @@ import ProfilePicture from '@/Components/ProfilePicture.vue';
 import MainLayout from '@/Layouts/MainLayout.vue';
 
 const user = usePage().props.auth.user
+const member = usePage().props.auth.member
 
 defineOptions({
     layout:  MainLayout

@@ -56,9 +56,13 @@
     --chart-5: 340 75% 55%
   }
 }
+/* @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap'); */
 @layer base {
   * {
     @apply border-border;
+  }
+  html {
+    font-family: 'roboto', sans-serif
   }
   body {
     @apply bg-background text-foreground;
