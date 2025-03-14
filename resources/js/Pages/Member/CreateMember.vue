@@ -70,7 +70,7 @@
                         <label>Définition des autorisations</label>
                             <label id="access" class="flex items-center gap-1">
                                 <input 
-                                    v-model="member.can_view_private_folder" 
+                                    v-model="member.can_view_private_folders" 
                                     type="checkbox" 
                                     name="access" 
                                     for="access"
@@ -112,7 +112,7 @@ const member = useForm({
     email: "",
     password: "",
     disk_space: "",
-    can_view_private_folder: false,
+    can_view_private_folders: false,
 })
 
 const submit = () => {

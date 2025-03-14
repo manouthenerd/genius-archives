@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('encryption_key');
             $table->string('file_path');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

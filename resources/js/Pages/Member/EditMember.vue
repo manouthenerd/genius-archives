@@ -37,14 +37,17 @@
             <ModalItem class="space-y-2">
                 <label>Définition des autorisations</label>
                 <label id="access" class="flex items-center gap-1">
-                    <input v-model="form.can_view_private_folder" type="checkbox" name="access" for="access">
+                    <input v-model="form.can_view_private_folders" type="checkbox" name="access" for="access">
                     Peut accéder aux dossiers privés
                 </label>
 
             </ModalItem>
 
             <ModalItem>
-                <Button>
+                <Button
+                    :disabled="isFormUnchanged"
+                    :class="{'pointer-events-none grayscale': isFormUnchanged}"
+                >
                     <span v-if="!form.processing">Sauvegarder</span>
                     <Loader v-if="form.processing" class="animate-spin" />
                 </Button>
@@ -56,6 +59,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import ModalItem from '@/Components/modals/ModalItem.vue';
 import SectionHead from '@/Components/SectionHead.vue';
 import MainLayout from '@/Layouts/MainLayout.vue';
@@ -74,13 +78,21 @@ const props = defineProps({
 })
 
 const form = useForm(
-    {
+    {   
+        id: props.member.id,
         name: props.member.name,
         email: props.member.email,
         disk_space: props.member.disk_space,
-        can_view_private_folder: props.member.can_view_private_folders,
+        can_view_private_folders: props.member.can_view_private_folders,
     }
 )
+
+const isFormUnchanged = computed(() => {
+    return form.name === props.member.name &&
+           form.email === props.member.email &&
+           form.disk_space === props.member.disk_space &&
+           form.can_view_private_folders === props.member.can_view_private_folders;
+});
 
 const submit = () => {
     form.patch(usePage().url)

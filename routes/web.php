@@ -57,6 +57,7 @@ Route::middleware([EnsureIsAuth::class, IsAdmin::class, VerifiedEmail::class])->
     Route::get('/mes-membres', [MemberController::class, 'index'])->name('members');
     Route::get('/mes-membres/{id}/edit', [MemberController::class, 'show'])->name('show-member');
     Route::patch('/mes-membres/{id}/edit', [MemberController::class, 'update'])->name('edit-member');
+    Route::delete('/mes-membres/{id}', [MemberController::class, 'destroy']);
 
     Route::get('/nouveau-membre', function() {
         return abort(404);

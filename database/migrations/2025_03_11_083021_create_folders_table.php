@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('access_level');
             $table->string('visibility');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

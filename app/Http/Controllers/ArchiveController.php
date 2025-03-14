@@ -15,7 +15,11 @@ class ArchiveController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->file('doc')->store());
+        // dd($request->file('doc')->store());
+
+        $file = $request->file('doc');
+
+        $file->store('temp', 'temp');
         return Inertia::render('Archives/CreateArchive');
     }
 

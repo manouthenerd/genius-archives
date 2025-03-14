@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MemberFormRequest;
+use App\Http\Requests\UpdateMemberFormRequest;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Member;
@@ -30,10 +31,9 @@ class MemberController extends Controller
 
     public function store(MemberFormRequest $request)
     {
-        
         $validated = $request->validated();
 
-       $member = Arr::add($validated, 'user_id', $request->user()->id);
+        $member = Arr::add($validated, 'user_id', $request->user()->id);
 
         Member::create($member);
 
@@ -49,13 +49,32 @@ class MemberController extends Controller
         return Inertia::render('Member/EditMember', ['member' => $member]);
     }
         
-    public function update(Request $request)
+    public function update(UpdateMemberFormRequest $request)
     {
-        dd($request);
+        $member = Member::find($request->input('id'));
+
+        $member->update([
+            'name'  => $request->input('name'),
+            'email'  => $request->input('email'),
+            'disk_space'  => $request->input('disk_space'),
+            'can_view_private_folders'  => $request->input('can_view_private_folders')
+        ]);
+
+        $member->save();
+
+        if($member->wasChanged('email')) {
+            $member->email_verified_at = null;
+            $member->save();
+        }
+
+        return redirect()->back()->with('status', 'Modification effectuée avec succès.');
+
     }
 
-    public function destroy()
+    public function destroy($id)
     {
+        Member::find($id)->delete();
 
+        return redirect()->back()->with('status', 'Membre supprimé avec succès');
     }
 }
