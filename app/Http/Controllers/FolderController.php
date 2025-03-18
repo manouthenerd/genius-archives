@@ -17,7 +17,7 @@ class FolderController extends Controller
         $validated = $request->validate([
             'name'          => ['required', 'string'],
             'visibility'    => ['required', 'in:private,public'],
-            'access_level'        => ['required', 'in:private,public'],
+            'access_level'  => ['required', 'in:private,public'],
             'password'      => ['required_if:access,private']
         ]);
 

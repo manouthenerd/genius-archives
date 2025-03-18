@@ -36,8 +36,8 @@
                             <ul class="flex flex-col items-center gap-2 text-white">
                                 <li v-if="user">
                                     <ul class="text-[14px] text-slate-300">
-                                        <li v-for="folder in user_folders ">
-                                            <Link :href="'/folders/' + folder.id">
+                                        <li v-for="folder in user_folders" :title="folder.name">
+                                            <Link :href="'/folders/' + folder.id" class=" overflow-hidden whitespace-nowrap inline-block text-ellipsis w-[145px]">
                                                 {{ folder.name }}
                                             </Link>
                                         </li>
@@ -46,8 +46,8 @@
 
                                 <li v-if="member">
                                     <ul class="text-[14px] text-slate-300">
-                                        <li v-for="folder in member_folders ">
-                                            <Link :href="'/folders/' + folder.id">
+                                        <li v-for="folder in member_folders" :title="folder.name">
+                                            <Link :href="'/folders/' + folder.id" class=" overflow-hidden whitespace-nowrap inline-block text-ellipsis w-[145px]">
                                                 {{ folder.name }}
                                             </Link>
                                         </li>
@@ -242,6 +242,11 @@ li button {
 a:hover,
 li button:hover {
     color: #2563eb;
+}
+élément {
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
 }
 
 .rotate-button {

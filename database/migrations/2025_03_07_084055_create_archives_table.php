@@ -18,7 +18,9 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('encryption_key');
+            $table->string('extension');
             $table->string('file_path');
+            $table->integer('file_size');
             $table->softDeletes();
             $table->timestamps();
         });
