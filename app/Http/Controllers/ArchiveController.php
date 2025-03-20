@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\OpenSsl;
 use Inertia\Inertia;
 use App\Models\Folder;
 use Illuminate\Support\Arr;
@@ -11,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\FileUploadRequest;
+use App\Models\Archive;
 
 class ArchiveController extends Controller
 {
@@ -37,19 +39,32 @@ class ArchiveController extends Controller
 
     public function store(FileUploadRequest $request): RedirectResponse
     {
+
         if (! $request->file('file')->isValid()) {
             return redirect()->back()->with('status', "Une erreur s'est produit lors du téléversement");
         }
-        // Récupérer la taille du fichier en GigaOctet
-        $file_size = $request->file->getSize() / pow(1024, 3);
+
+
+                                    # # # # # # # # # # 
+                                    # DATA CONVERSION #
+                                    # # # # # # # # # #
+                                    #      👾        #
+                                    # 1Ko => 1024 O   #
+                                    # 1Mo => 1024^2 O #
+                                    # 1Go => 1024^3 O #
+                                    # # # # # # # # # #
+
+
+        // Récupérer la taille du fichier en MegaOctet
+        $file_size = $request->file->getSize() / pow(1024, 2);
 
         $title = $request->validated('title');
 
-        $content = $request->validated('content');
-        $encryption_key = $request->validated('encryption_key');
+        $description = $request->validated('description');
 
-        $folder = Folder::find($request->validated('folder'))
-            ->only('id', 'name', 'access_level', 'visibility');
+        $mime_type = finfo_file(finfo_open(FILEINFO_MIME), $request->file);
+
+        $folder = Folder::find($request->validated('folder'), ['id', 'name', 'access_level', 'visibility']);
 
         $file_extension = $request->file->extension();
 
@@ -67,18 +82,39 @@ class ArchiveController extends Controller
             Storage::disk('public')->makeDirectory($directory_name_format);
         }
 
+        //-------Processus de cryptage du contenu du fichier----------
+
+        // Récupérer le fichier
+        $file = $request->file;
+
+        // Crypter et récupérer le contenu
+        $encrypted_file_content = Crypt::encrypt(file_get_contents($request->file));
+
         $file_path = null;
 
-        // Enregistrer le fichier dans: User_name/folder/nom_unique
+        // Enregistrer le contenu crypté dans le même fichier
+        file_put_contents($file, $encrypted_file_content);
+
+        // Enregistrer le fichier dans le répertoire correspondant
         if ($folder['access_level'] == 'public') {
             $file_path = Storage::disk('public')
-                ->put("$directory_name_format/" . $folder['name'], $request->file);
+                ->putFileAs($directory_name_format . "/" . $folder->name, $file, "$title.$file_extension");
         }
 
         if ($folder['access_level'] == 'private') {
-            $file_path = Storage::put("$directory_name_format/" . $folder['name'], $request->file);
+            $file_path = Storage::putFileAs($directory_name_format . "/" . $folder->name, $file, "$title.$file_extension");
         }
 
+        // Enregistrer les information du fichier dans la BD
+        Archive::create([
+            'folder_id' => $folder->id,
+            'name'      => $title,
+            'description'   => $description,
+            'extension'     => $file_extension,
+            'mime_type'     => $mime_type,
+            'file_path'     => $file_path,
+            'file_size'     => $file_size
+        ]);
 
         return redirect()->back();
     }

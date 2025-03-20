@@ -22,19 +22,14 @@
                     </div>
 
                     <div class="w-full space-y-2">
-                        <label for="key">Clé de décryptage</label>
-                        <div>
-                            <Input v-model="form.encryption_key" name="key" id="key"
-                                class="w-full focus:ring-1 rounded-sm" placeholder="Entrer la clé de décryptage" />
-                        </div>
                         <Note
-                            text="Tous les fichiers sont cryptés. Il vous serait impossible d'accéder à un fichier sans la clé de décryptage" />
+                            text="Le nom d'origine de chaque fichier sera remplacé par le titre que vous avez entré au dessus 🔝" />
                     </div>
 
                     <div class="w-full">
                         <label for="content">Contexte ou description</label>
                         <div>
-                            <textarea v-model="form.content" name="content" id="content"
+                            <textarea v-model="form.description" name="content" id="content"
                                 class="w-full field-sizing-content focus:ring-1 rounded-sm resize-y"
                                 placeholder="Un résumé ou une brève description du contenu et de la finalité du document"></textarea>
                         </div>
@@ -78,14 +73,19 @@
                         </span>
                     </div>
                     <div class="w-full">
+                        <div class="w-full space-y-2">
+                        <Note
+                            text="Les fichiers sont automatiquement cryptés pour une question de sécurité" />
+                            </div>
 
                         <Button 
                             :disabled="form.processing"
                             v-if="fileUploadModal.isClosed" 
-                            class="w-full">
-                            <span class="mt-[7px]" v-if="!form.processing">Enregistrer</span>
+                            class="w-full mt-2">
+                            <template class="mt-[7px]" v-if="!form.processing">Enregistrer</template>
                             <Loader v-if="form.processing" class="animate-spin" />
                         </Button>
+                        
                     </div>
 
                 </form>
@@ -137,8 +137,7 @@ const form = useForm({
     title: "",
     file: "",
     folder: "",
-    content: "",
-    encryption_key: ""
+    description: "",
 })
 
 const filePreview = ref(null);

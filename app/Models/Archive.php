@@ -10,4 +10,6 @@ class Archive extends Model
 {
     /** @use HasFactory<\Database\Factories\ArchiveFactory> */
     use SoftDeletes, HasFactory;
+
+    protected $guarded = [];
 }

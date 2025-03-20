@@ -1,0 +1,135 @@
+<template>
+    <SectionHead title="Mon dossier" />
+    <div class="h-full w-full bg-white p-2 rounded flex gap-4 flex-wrap">
+        <template v-for="file in files" :key="file.id">
+            <div 
+                :class="fileData(file).color"
+                :title="file.name" 
+                class="max-w-[213px] border-2 border-dashed rounded-tr-2xl border-black p-2 rounded-sm space-y-2">
+                <div>
+                    <pre class="w-[193px] text-ellipsis overflow-hidden">Titre: {{ file.name }}</pre>
+                    <pre>Type: Fichier {{ fileData(file).type }}</pre>
+                    <pre>Auteur: Moi</pre>
+                    <pre>Taille: {{ file.file_size.toFixed(0) }} Ko</pre>
+                    <p>Modifié le: {{ file.created_at.split('T')[0] }}</p>
+                </div>
+                <div class="flex flex-col space-y-2 justify-center">
+                    
+                    <div class="h-[50px] w-full flex justify-center">
+                        <img :src="fileData(file).svg" alt="document illustration">
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 flex justify-end">
+                            <Download size="15" />
+                            <span>33</span>
+                        </p>
+                        <p class="mt-2 flex justify-between px-1">
+                            <Link 
+                                :href="usePage().url"
+                                as="button" 
+                                method="post" 
+                                class="text-gray-400 font-medium hover:text-black">
+                                Télécharger
+                            </Link>
+                            <Link 
+                                :href="usePage().url"
+                                as="button" method="delete">
+                                <Trash2 color="#9ca3af" class="hover:stroke-red-500"/>
+                            </Link>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>
+
+<script setup>
+import SectionHead from '@/Components/SectionHead.vue';
+import MainLayout from '@/Layouts/MainLayout.vue';
+import { Download, Trash2 } from 'lucide-vue-next';
+import { Link, usePage } from '@inertiajs/vue3';
+import { computed, reactive } from 'vue';
+
+defineOptions({
+    layout: MainLayout
+})
+
+const colors = reactive({
+    music: 'bg-[#f4efef]',
+    word: 'bg-[#2766ae5c]',
+    file: 'bg-[#f9ebb282]',
+    video: 'bg-[#e539352e]',
+    excel: 'bg-[#27ae683d]',
+    powerpoint: 'bg-[#f69b8347]',
+    image: "#e8e7e382"
+})
+
+const fileData = (file) => {
+
+    if(file.mime_type.match('spreadsheet')) {
+        return {
+            color: colors.excel,
+            svg: '/icons/illustrations/excel.svg',
+            type: 'Excel'
+        }
+    }
+
+    if(file.mime_type.match('word')) {
+        return {
+            color: colors.word,
+            svg: '/icons/illustrations/word.svg',
+            type: 'Word'
+        }
+    }
+
+    if(file.mime_type.match('video')) {
+        return {
+            color: colors.video,
+            svg: '/icons/illustrations/video.svg',
+            type: 'Video'
+        }
+    }
+
+    if(file.mime_type.match('music')) {
+        return {
+            color: colors.music,
+            svg: '/icons/illustrations/music.svg',
+            type: 'Audio'
+        }
+    }
+
+    if(file.mime_type.match('powerpoint')) {
+        return {
+            color: colors.powerpoint,
+            svg: '/icons/illustrations/powerpoint.svg',
+            type: 'Powerpoint'
+        }
+    }
+
+    if(file.mime_type.match('image')) {
+        return {
+            color: colors.image,
+            svg: '/icons/illustrations/picture.svg',
+            type: 'image'
+        }
+    }
+
+    return {
+            color: colors.file,
+            svg: '/icons/illustrations/file.svg',
+            type: 'Texte'
+        }
+}
+
+const props = defineProps({
+    files: Array
+})
+</script>
+
+<style scoped>
+button:hover {
+    transition: all .5s ease;
+    
+}
+</style>

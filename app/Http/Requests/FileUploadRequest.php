@@ -24,17 +24,9 @@ class FileUploadRequest extends FormRequest
         return [
             'title'             => ['required', 'string', 'unique:archives,name'],
             'folder'            => ['required', 'exists:folders,id', 'string'],
-            'content'           => ['required', 'string'],
-            'encryption_key'    => ['required'],
+            'description'       => ['required', 'string'],
             'file'              => ['required',  'file']
 
-        ];
-    }
-
-    public function attributes()
-    {
-        return [
-            'encryption_key' => 'clé de cryptage'
         ];
     }
 }

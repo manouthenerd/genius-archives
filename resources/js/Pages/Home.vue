@@ -1,5 +1,4 @@
 <template>
-    <AuthenticatedLayout>
         <div class="grid">
             <div id="charts"
                 class="px-2 bg-army overflow-x-scroll overflow-auto flex flex-wrap gap-4 justify-between items-center min-h-10">
@@ -71,65 +70,71 @@
             </div>
 
         </div>
-    </AuthenticatedLayout>
 </template>
 
 <script setup>
 import Chart from "chart.js/auto";
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Tag from '@/Components/Tag.vue';
 import SectionHead from '@/Components/SectionHead.vue';
 import { onMounted } from "vue";
 import { Link } from "@inertiajs/vue3";
+import MainLayout from "@/Layouts/MainLayout.vue";
 
+defineOptions({
+    layout: MainLayout
+})
 
-// onMounted(() => {
-//     const firstCanvas = document.querySelector("#first-canvas");
-//     const secondCanvas = document.querySelector("#second-canvas");
-//     const lastCanvas = document.querySelector("#last-canvas");
+defineProps({
+    
+})
 
-//     const data = {
-//         labels: ['PDF', 'Excel', 'Word', 'Image'],
-//         datasets: [{
-//             label: "Nombre de fichiers",
-//             data: [20, 50, 90, 100],
-//             backgroundColor: ['red', 'skyblue', 'yellowgreen', 'orange', 'green'],
-//             borderWidth: 2,
-//             hoverOffset: 5
-//         }]
-//     }
+onMounted( () => {
+    const firstCanvas = document.querySelector("#first-canvas");
+    const secondCanvas = document.querySelector("#second-canvas");
+    const lastCanvas = document.querySelector("#last-canvas");
 
-//     const options = {
-//         responsive: true,
-//         plugins: {
+    const data = {
+        labels: ['PDF', 'Excel', 'Word', 'Image'],
+        datasets: [{
+            label: "Nombre de fichiers",
+            data: [20, 50, 90, 100],
+            backgroundColor: ['red', 'skyblue', 'yellowgreen', 'orange', 'green'],
+            borderWidth: 2,
+            hoverOffset: 5
+        }]
+    }
 
-//             title: {
-//                 display: true,
-//                 text: "Répartitions par format de documents",
-//                 color: "#001F3D",
-//                 position: 'bottom',
-//                 align: 'center'
-//             }
-//         }
-//     }
+    const options = {
+        responsive: true,
+        plugins: {
 
-//     new Chart(firstCanvas, {
-//         type: 'doughnut',
-//         data: data,
-//         options: options
-//     })
-//     new Chart(secondCanvas, {
-//         type: 'doughnut',
-//         data: data,
-//         options: options
-//     })
-//     new Chart(lastCanvas, {
-//         type: 'doughnut',
-//         data: data,
-//         options: options
-//     })
-// }
-// )
+            title: {
+                display: true,
+                text: "Répartitions par format de documents",
+                color: "#001F3D",
+                position: 'bottom',
+                align: 'center'
+            }
+        }
+    }
+
+    new Chart(firstCanvas, {
+        type: 'doughnut',
+        data: data,
+        options: options
+    })
+    new Chart(secondCanvas, {
+        type: 'doughnut',
+        data: data,
+        options: options
+    })
+    new Chart(lastCanvas, {
+        type: 'doughnut',
+        data: data,
+        options: options
+    })
+}
+)
 </script>
 
 <style scoped>

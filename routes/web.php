@@ -37,6 +37,8 @@ Route::middleware([VerifiedEmail::class, EnsureIsAuth::class, IsMemberOrAdmin::c
 
     Route::post('/folders', [FolderController::class, 'store']);
 
+    Route::get('/folders/{id}', [FolderController::class, 'show']);
+
     Route::get('/nouvelle-archive', [ArchiveController::class, 'create']);
 
     Route::post('/temp', [ArchiveController::class, 'preview']);

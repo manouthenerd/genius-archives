@@ -17,10 +17,10 @@ return new class extends Migration
             $table->foreignIdFor(Folder::class);
             $table->string('name');
             $table->text('description')->nullable();
-            $table->string('encryption_key');
             $table->string('extension');
+            $table->string('mime_type');
             $table->string('file_path');
-            $table->integer('file_size');
+            $table->decimal('file_size', 16, 13);
             $table->softDeletes();
             $table->timestamps();
         });
