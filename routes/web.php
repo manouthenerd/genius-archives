@@ -31,9 +31,14 @@ Route::middleware([VerifiedEmail::class, EnsureIsAuth::class, IsSuperAdminOrAdmi
 
 //Member ou Admin
 Route::middleware([VerifiedEmail::class, EnsureIsAuth::class, IsMemberOrAdmin::class])->group(function () {
+    
     Route::get('/mes-archives', function () {
         return Inertia::render('Archives', []);
     });
+
+    Route::post('/archives/{id}', [ArchiveController::class, 'download']);
+
+    Route::delete('/archives/{id}', [ArchiveController::class, 'destroy']);
 
     Route::post('/folders', [FolderController::class, 'store']);
 

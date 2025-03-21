@@ -1,11 +1,10 @@
 <template>
         <div class="grid">
             <div id="charts"
-                class="px-2 bg-army overflow-x-scroll overflow-auto flex flex-wrap gap-4 justify-between items-center min-h-10">
-                <Tag title="Mix" href="#" :counter="100" />
-                <Tag title="PDF" href="#" :counter="22" />
-                <Tag title="EXCEL" href="#" :counter="22" />
-                <Tag title="WORD" href="#" :counter="22" />
+                class="px-2 bg-army overflow-x-scroll overflow-auto flex flex-nowrap gap-4  items-center min-h-10">
+                <template v-for="file in files_by_extension">
+                    <Tag :title="file.file_type" href="#" :counter="file.total" />
+                </template>
             </div>
             <!-- Charts -->
             <div class="mt-8">
@@ -76,7 +75,7 @@
 import Chart from "chart.js/auto";
 import Tag from '@/Components/Tag.vue';
 import SectionHead from '@/Components/SectionHead.vue';
-import { onMounted } from "vue";
+import { onMounted, reactive } from "vue";
 import { Link } from "@inertiajs/vue3";
 import MainLayout from "@/Layouts/MainLayout.vue";
 
@@ -84,9 +83,10 @@ defineOptions({
     layout: MainLayout
 })
 
-defineProps({
-    
+const props = defineProps({
+    files_by_extension: Array,
 })
+
 
 onMounted( () => {
     const firstCanvas = document.querySelector("#first-canvas");

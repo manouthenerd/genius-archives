@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('extension');
-            $table->string('mime_type');
+            $table->string('file_type');
             $table->string('file_path');
             $table->decimal('file_size', 16, 13);
             $table->softDeletes();

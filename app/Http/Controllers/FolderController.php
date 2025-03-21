@@ -16,7 +16,7 @@ use Symfony\Component\Mime\MimeTypes;
 
 class FolderController extends Controller
 {
-    public function show($id, Request $request)
+    public function show($id)
     {
         $folder = Folder::findOrFail($id);
 
@@ -34,13 +34,15 @@ class FolderController extends Controller
                 'file_path' => $file->file_path,
                 'file_size' => $file->file_size * 1024,
                 'file_extension'    => $file->extension,
-                'mime_type' => $file->mime_type,
-                'created_at' => $file->created_at
+                'file_type' => $file->file_type,
+                'created_at' => $file->created_at,
+                'path' => Storage::url($file->file_path)
             ];
        });
 
        return Inertia::render('Folder/Folder', [
-        'files' => $files
+        'files' => $files,
+        'folder'    => $folder->name
        ]);
      
     }

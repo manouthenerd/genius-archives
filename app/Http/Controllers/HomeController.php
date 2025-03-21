@@ -2,40 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Inertia\Inertia;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Superadmin\SuperAdminController;
-use App\Models\Archive;
 use App\Models\Folder;
-use App\Models\Member;
+use App\Models\Archive;
 use Illuminate\Support\Arr;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Superadmin\SuperAdminController;
 
 class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        
+
         $user = $request->user('web') ?? $request->user('member');
 
         // Récupérer les dossiers du User connecté
-        $folders = Folder::where('owner_id', '=', $user->id)->get(['id', 'name']);
-        
+        $folders = Folder::where('owner_id', '=', $user->id)->get('id');
+
         // Récupérer l'Id de chaque dossier
-        $folders_id = $folders->map( function ($folder) {
+        $folders_id = $folders->map(function ($folder) {
             return $folder->id;
         });
 
+        $folders_id = Arr::join($folders_id->toArray(), ',');
+
+        $files_by_type = null;
+
         // Récupérer les fichiers associés aux différents dossiers
-        $user_files = Archive::all('id', 'folder_id', 'name', 'extension')
-            ->whereIn('folder_id', $folders_id)
-            ->groupBy('extension');
+        if ($folders_id) {
+            $files_by_type = DB::select(
+                "SELECT file_type, COUNT(file_type) AS 'total' FROM `archives` WHERE folder_id IN($folders_id) GROUP BY(file_type); "
+            );
+        }
 
 
-        
-        $files_by_extension = $user_files->map( function($file) {
-            return $file->count();
-        });        
 
         switch ($user->role) {
             case 'superadmin':
@@ -43,8 +44,10 @@ class HomeController extends Controller
                 break;
 
             default:
-                
-                return Inertia::render('Home', ['files_by_extension' => $files_by_extension]);
+
+                return Inertia::render('Home', [
+                    'files_by_extension' => $files_by_type,
+                ]);
                 break;
         }
     }

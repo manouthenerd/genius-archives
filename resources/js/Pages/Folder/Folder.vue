@@ -1,6 +1,6 @@
 <template>
-    <SectionHead title="Mon dossier" />
-    <div class="h-full w-full bg-white p-2 rounded flex gap-4 flex-wrap">
+    <SectionHead :title="`Mon dossier: ${folder}(${files.length})`" />
+    <div class="h-full w-full bg-white py-4 rounded flex gap-4 flex-wrap px-4">
         <template v-for="file in files" :key="file.id">
             <div 
                 :class="fileData(file).color"
@@ -8,7 +8,7 @@
                 class="max-w-[213px] border-2 border-dashed rounded-tr-2xl border-black p-2 rounded-sm space-y-2">
                 <div>
                     <pre class="w-[193px] text-ellipsis overflow-hidden">Titre: {{ file.name }}</pre>
-                    <pre>Type: Fichier {{ fileData(file).type }}</pre>
+                    <pre>Type: Fichier {{ file.file_type }}</pre>
                     <pre>Auteur: Moi</pre>
                     <pre>Taille: {{ file.file_size.toFixed(0) }} Ko</pre>
                     <p>Modifié le: {{ file.created_at.split('T')[0] }}</p>
@@ -25,14 +25,14 @@
                         </p>
                         <p class="mt-2 flex justify-between px-1">
                             <Link 
-                                :href="usePage().url"
+                                :href="`/archives/${file.id}`"
                                 as="button" 
                                 method="post" 
                                 class="text-gray-400 font-medium hover:text-black">
                                 Télécharger
                             </Link>
                             <Link 
-                                :href="usePage().url"
+                                :href="`/archives/${file.id}`"
                                 as="button" method="delete">
                                 <Trash2 color="#9ca3af" class="hover:stroke-red-500"/>
                             </Link>
@@ -49,7 +49,7 @@ import SectionHead from '@/Components/SectionHead.vue';
 import MainLayout from '@/Layouts/MainLayout.vue';
 import { Download, Trash2 } from 'lucide-vue-next';
 import { Link, usePage } from '@inertiajs/vue3';
-import { computed, reactive } from 'vue';
+import { reactive } from 'vue';
 
 defineOptions({
     layout: MainLayout
@@ -62,68 +62,31 @@ const colors = reactive({
     video: 'bg-[#e539352e]',
     excel: 'bg-[#27ae683d]',
     powerpoint: 'bg-[#f69b8347]',
-    image: "#e8e7e382"
+    image: "#e8e7e382",
+    pdf: '#ffe8e8'
 })
 
 const fileData = (file) => {
 
-    if(file.mime_type.match('spreadsheet')) {
-        return {
-            color: colors.excel,
-            svg: '/icons/illustrations/excel.svg',
-            type: 'Excel'
-        }
-    }
+    if(file.file_type.match(file.file_type.toUpperCase())) {
 
-    if(file.mime_type.match('word')) {
-        return {
-            color: colors.word,
-            svg: '/icons/illustrations/word.svg',
-            type: 'Word'
-        }
-    }
+        let type = file.file_type.toLowerCase()
 
-    if(file.mime_type.match('video')) {
         return {
-            color: colors.video,
-            svg: '/icons/illustrations/video.svg',
-            type: 'Video'
-        }
-    }
-
-    if(file.mime_type.match('music')) {
-        return {
-            color: colors.music,
-            svg: '/icons/illustrations/music.svg',
-            type: 'Audio'
-        }
-    }
-
-    if(file.mime_type.match('powerpoint')) {
-        return {
-            color: colors.powerpoint,
-            svg: '/icons/illustrations/powerpoint.svg',
-            type: 'Powerpoint'
-        }
-    }
-
-    if(file.mime_type.match('image')) {
-        return {
-            color: colors.image,
-            svg: '/icons/illustrations/picture.svg',
-            type: 'image'
+            color: colors[type],
+            svg: `/icons/illustrations/${type}.svg`
         }
     }
 
     return {
             color: colors.file,
             svg: '/icons/illustrations/file.svg',
-            type: 'Texte'
         }
 }
 
 const props = defineProps({
-    files: Array
+    files: Array,
+    folder: String
 })
 </script>
 
