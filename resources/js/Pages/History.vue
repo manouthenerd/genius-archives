@@ -1,84 +1,70 @@
 <template>
         <Head title="Historique"/>
+        <div class="overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr class="whitespace-nowrap">
+                
+                <th scope="col" class="px-6 py-3">
+                    <input type="checkbox" name="checked" id="checked">
+                </th>
+                <th scope="col" class="px-6 py-3">
+                   Membre
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Adresse email
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Adresse IP
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Status
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Début de session
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Fin de session
+                </th>
+                <th scope="col" class="px-6 py-3">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr 
+                v-for="member_history in members_history"
+                class="bg-white text-center border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+                
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    <input type="checkbox" :value="member_history.session_id" :name="member_history.session_id" :id="member_history.session_id">
+                </th>
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    {{ member_history.name }}
+                </th>
+                <td class="px-6 py-4">
+                    {{ member_history.email }}
+                </td>
+                <td class="px-6 py-4">
+                    {{ member_history.ip_address }}
+                </td>
+                <td class="px-6 py-4">
+                    {{ member_history.status == 'online' ? 'en ligne' : 'hors-ligne' }} 
+                </td>
+                <td class="px-6 py-4">
+                    {{ member_history.login_at }}
+                </td>
+                <td class="px-6 py-4">
+                    {{ member_history.logout_at ?? 'session active' }}
+                </td>
+                <td class="px-6 py-4">
+                   
+                </td>
+               
+            </tr>
 
-        <!-- <div class="w-full space-y-4">
-            <SectionHead title="Historique générale" />
-            <ol class="relative z-[1] border-s border-gray-200 dark:border-gray-700">
-                <li class="mb-10 ms-6">
-                    <span
-                        class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                        <img class="rounded-full shadow-lg" src="/image/profile.jpg" alt="Bonnie image" />
-                    </span>
-                    <div
-                        class="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-xs sm:flex dark:bg-gray-700 dark:border-gray-600">
-                        <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">just now</time>
-                        <div class="text-sm font-normal text-gray-500 dark:text-gray-300">Bonnie moved <a href="#"
-                                class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">Jese Leos</a> to
-                            <span
-                                class="bg-gray-100 text-gray-800 text-xs font-normal me-2 px-2.5 py-0.5 rounded-sm dark:bg-gray-600 dark:text-gray-300">Funny
-                                Group</span></div>
-                    </div>
-                </li>
-                <li class="mb-10 ms-6">
-                    <span
-                        class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                        <img class="rounded-full shadow-lg" src="/image/profile.jpg" alt="Thomas Lean image" />
-                    </span>
-                    <div
-                        class="p-4 bg-white border border-gray-200 rounded-lg shadow-xs dark:bg-gray-700 dark:border-gray-600">
-                        <div class="items-center justify-between mb-3 sm:flex">
-                            <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">2 hours
-                                ago</time>
-                            <div class="text-sm font-normal text-gray-500 lex dark:text-gray-300">Thomas Lean commented
-                                on <a href="#"
-                                    class="font-semibold text-gray-900 dark:text-white hover:underline">Flowbite Pro</a>
-                            </div>
-                        </div>
-                        <div
-                            class="p-3 text-xs italic font-normal text-gray-500 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-gray-300">
-                            Hi ya'll! I wanted to share a webinar zeroheight is having regarding how to best measure
-                            your design system! This is the second session of our new webinar series on #DesignSystems
-                            discussions where we'll be speaking about Measurement.</div>
-                    </div>
-                </li>
-                <li class="ms-6">
-                    <span
-                        class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                        <img class="rounded-full shadow-lg" src="/image/profile.jpg" alt="Jese Leos image" />
-                    </span>
-                    <div
-                        class="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-xs sm:flex dark:bg-gray-700 dark:border-gray-600">
-                        <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">1 day ago</time>
-                        <div class="text-sm font-normal text-gray-500 lex dark:text-gray-300">Jese Leos has changed <a
-                                href="#" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">Pricing
-                                page</a> task status to <span
-                                class="font-semibold text-gray-900 dark:text-white">Finished</span></div>
-                    </div>
-                </li>
-            </ol>
-        </div> -->
-
-        <div class="w-full grid space-y-4">
-            <SectionHead title="Historique générale"/>
-
-            <div class="mx-4 p-2">
-                <div class="flex gap-1">
-                    <img 
-                        class="size-[30px] rounded-full ring ring-slate-200 border-slate-200 shadow-md shadow-black" 
-                        src="/image/profile.jpg" alt="profile picture"
-                    >
-
-                    <div class="ring-slate-300 bg-slate-300 w-2/4 p-1 rounded flex items-center shadow-md shadow-black">
-                        <p class="bg-white p-2 rounded-sm text-gray-500 gap-2 grid w-full">
-                            <span class="flex items-center gap-2">
-                                <strong>Jean Yves</strong> était en ligne <Unplug size="18"/>
-                            </span>
-                            <span class="justify-self-end"><i>il y a 2min</i></span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </tbody>
+    </table>
+</div>
 </template>
 
 <script setup>
@@ -89,5 +75,9 @@ import { Head } from '@inertiajs/vue3';
 
 defineOptions({
     layout: MainLayout
+})
+
+defineProps({
+    members_history: Array
 })
 </script>

@@ -123,7 +123,7 @@ class ArchiveController extends Controller
             ->putFileAs($directory_name_format . "/" . $folder->name, $file, "$title.$file_extension");
 
         // Enregistrer les information du fichier dans la BD
-        Archive::create([
+        $archive = Archive::create([
             'folder_id' => $folder->id,
             'name'      => $title,
             'description'   => $description,
@@ -133,10 +133,31 @@ class ArchiveController extends Controller
             'file_size'     => $file_size
         ]);
 
+         // Créer un fichier temporaire avec le contenu décrypté
+         $this->create_temp_file($archive->id);
+
         return redirect()->back();
     }
 
-    public function download($id)
+    // public function download($id)
+    // {
+    //     $archive = Archive::find($id);
+
+    //     if (! $archive) {
+    //         abort(404);
+    //     }
+
+    //     // $folder = 
+
+    //     Storage::disk('public')->makeDirectory('temp'); 
+
+    //     Storage::put("public/storage/temp/$archive->name", '');
+
+    //     file_put_contents("storage/temp/$archive->name.$archive->extension", Crypt::decrypt(Storage::disk('public')->get($archive->file_path)));
+
+    // }
+
+    public function create_temp_file($id)
     {
         $archive = Archive::find($id);
 
@@ -144,11 +165,12 @@ class ArchiveController extends Controller
             abort(404);
         }
 
-        $decrypted_file = "/$archive->file_path";
+        Storage::disk('public')->makeDirectory('temp'); 
 
-        $file = file_put_contents($decrypted_file, Crypt::decrypt(Storage::disk('public')->get($archive->file_path)));
+        Storage::put("public/storage/temp/$archive->name", '');
 
-        // return Inertia::render()
+        file_put_contents("storage/temp/$archive->name.$archive->extension", Crypt::decrypt(Storage::disk('public')->get($archive->file_path)));
+
     }
 
     public function destroy($id)
@@ -160,6 +182,7 @@ class ArchiveController extends Controller
         }
 
         Storage::disk('public')->delete($archive->file_path);
+        Storage::disk('pubblic')->delete("public/storage/temp/$archive->name", '');
 
         $archive = Archive::find($id);
 

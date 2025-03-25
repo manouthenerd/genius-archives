@@ -7,12 +7,6 @@ use App\Models\Folder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Password;
-use Coduo\PHPHumanizer\NumberHumanizer;
-use Symfony\Component\Mime\MimeTypes;
 
 class FolderController extends Controller
 {
@@ -27,19 +21,22 @@ class FolderController extends Controller
        $files = $folder->archives;
 
        $files = $files->map( function($file) {
+
+        (new ArchiveController)->create_temp_file($file->id);
+
             return [
-                'id' => $file->id,
-                'name' => $file->name,
-                'description' => $file->description,
-                'file_path' => $file->file_path,
-                'file_size' => $file->file_size * 1024,
-                'file_extension'    => $file->extension,
-                'file_type' => $file->file_type,
-                'created_at' => $file->created_at,
-                'path' => Storage::url($file->file_path)
+                'id'            => $file->id,
+                'name'          => $file->name,
+                'description'   => $file->description,
+                'file_path'     => $file->file_path,
+                'file_size'     => $file->file_size * 1024,
+                'file_extension'=> $file->extension,
+                'file_type'     => $file->file_type,
+                'created_at'    => $file->created_at,
+                'download_path' => "/storage/temp/$file->name.$file->extension",
             ];
        });
-
+    
        return Inertia::render('Folder/Folder', [
         'files' => $files,
         'folder'    => $folder->name

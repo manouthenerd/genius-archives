@@ -16,6 +16,7 @@ use App\Http\Middleware\IsSuperAdminOrAdmin;
 use App\Http\Controllers\AccessKeysController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\FolderController;
+use App\Http\Controllers\HistoryController;
 
 //Auth + email vérifié
 Route::middleware([EnsureIsAuth::class, VerifiedEmail::class])->group(function () {
@@ -74,9 +75,7 @@ Route::middleware([EnsureIsAuth::class, IsAdmin::class, VerifiedEmail::class])->
 
     Route::post('/nouveau-membre', [MemberController::class, 'store']);
     
-    Route::get('/historique', function (Request $request) {
-        return Inertia::render('History');
-    });
+    Route::get('/historique', [HistoryController::class, 'index']);
 });
 
 

@@ -24,13 +24,11 @@
                             <span>33</span>
                         </p>
                         <p class="mt-2 flex justify-between px-1">
-                            <Link 
-                                :href="`/archives/${file.id}`"
-                                as="button" 
-                                method="post" 
+                            <a 
+                                :href="file.download_path"
                                 class="text-gray-400 font-medium hover:text-black">
                                 Télécharger
-                            </Link>
+                            </a>
                             <Link 
                                 :href="`/archives/${file.id}`"
                                 as="button" method="delete">
@@ -48,8 +46,9 @@
 import SectionHead from '@/Components/SectionHead.vue';
 import MainLayout from '@/Layouts/MainLayout.vue';
 import { Download, Trash2 } from 'lucide-vue-next';
-import { Link, usePage } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import { reactive } from 'vue';
+import axios from 'axios';
 
 defineOptions({
     layout: MainLayout
