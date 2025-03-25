@@ -16,9 +16,9 @@
                     <div style="width: 250px; height: 250px;" class="my-4">
                         <canvas id="second-canvas"></canvas>
                     </div>
-                    <div style="width: 250px; height: 250px;" class="my-4">
+                    <!-- <div style="width: 250px; height: 250px;" class="my-4">
                         <canvas id="last-canvas"></canvas>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
@@ -26,10 +26,10 @@
             <div class="mt-2">
                 <SectionHead title="Résumé de votre historique" />
                 <div class="h-[200px] overflow-y-scroll p-2 rounded-md bg-white shadow-inner shadow-lightGray">
-                    <div class="h-full bg-[url(/icons/empty.svg)] bg-no-repeat bg-center">
+                    <div class="h-full">
                         <p class="text-left  rounded-md flex justify-end">
                             <span class="flex items-center font-bold shadow-lg">
-                                <img src="/icons/cpu.svg" alt="memory icon">: 200 Mo utilisée
+                                <img src="/icons/cpu.svg" alt="memory icon">: {{ user_disk_space  ?? '200' }} Go d'espace
                             </span>
                         </p>
                         <div class="space-y-2">
@@ -85,6 +85,8 @@ defineOptions({
 
 const props = defineProps({
     files_by_extension: Array,
+    members_disk_space: Array,
+    user_disk_space: Number
 })
 
 
@@ -93,24 +95,51 @@ onMounted( () => {
     const secondCanvas = document.querySelector("#second-canvas");
     const lastCanvas = document.querySelector("#last-canvas");
 
-    const data = {
-        labels: ['PDF', 'Excel', 'Word', 'Image'],
+    const file_type_data = {
+        labels: props.files_by_extension.map( file => file.file_type),
         datasets: [{
             label: "Nombre de fichiers",
-            data: [20, 50, 90, 100],
-            backgroundColor: ['red', 'skyblue', 'yellowgreen', 'orange', 'green'],
+            data: props.files_by_extension.map( file => file.total),
+            backgroundColor: ['#91684A', 'yellowgreen', '#eab308 ', '#161D6F', '#0278AE'],
             borderWidth: 2,
             hoverOffset: 5
         }]
     }
 
-    const options = {
+    const file_data_options = {
         responsive: true,
         plugins: {
 
             title: {
                 display: true,
-                text: "Répartitions par format de documents",
+                text: "Mes archives par type",
+                color: "#001F3D",
+                position: 'bottom',
+                align: 'center'
+            }
+        }
+    }
+
+    const members_disk_space_data = {
+        labels: props.members_disk_space.map( member => `${member.disk_space} Mo`),
+        datasets: [{
+            label: "Membre total",
+            data: props.members_disk_space.map( member => member.total),
+            backgroundColor: [
+                '#DDA853', '#27548A', '#210F37', '#ACD3A8', '#522546'
+            ],
+            borderWidth: 2,
+            hoverOffset: 5
+        }]
+    }
+
+    const members_disk_options = {
+        responsive: true,
+        plugins: {
+
+            title: {
+                display: true,
+                text: "Quota d'espace par membre",
                 color: "#001F3D",
                 position: 'bottom',
                 align: 'center'
@@ -120,19 +149,20 @@ onMounted( () => {
 
     new Chart(firstCanvas, {
         type: 'doughnut',
-        data: data,
-        options: options
+        data: file_type_data,
+        options: file_data_options
     })
+
     new Chart(secondCanvas, {
         type: 'doughnut',
-        data: data,
-        options: options
+        data: members_disk_space_data,
+        options: members_disk_options
     })
-    new Chart(lastCanvas, {
-        type: 'doughnut',
-        data: data,
-        options: options
-    })
+    // new Chart(lastCanvas, {
+    //     type: 'doughnut',
+    //     data: data,
+    //     options: options
+    // })
 }
 )
 </script>

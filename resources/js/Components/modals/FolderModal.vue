@@ -17,7 +17,7 @@
         </ModalItem>
 
         <ModalItem>
-            <label for="visibility">Visibilité</label>
+            <label for="visibiliy">Visibilité</label>
             <select id="visibility" name="visibility" v-model="folderForm.visibility"
                 class="rounded-sm outline-none focus:outline-none border-slate-200 ">
                 <option value="public">Public</option>

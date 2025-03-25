@@ -1,16 +1,16 @@
 <template>
     <Modal 
+        class="w-full"
         v-show="! searchModal.isClosed"
         @close-event="searchModal.closeModal()"
         title="Barre de recherche">
+        
         <ModalItem class="w-full">
-            <Input class="my-2" type="text" name="search" id="search"
+            <Input class="my-2" type="search" name="search" id="search"
                 placeholder="Nom du dossier ou fichier..." />
 
-            <ModalItem class="rounded-sm min-h-36 bg-white border border-slate-200">
-
-            </ModalItem>
         </ModalItem>
+
     </Modal>
 </template>
 

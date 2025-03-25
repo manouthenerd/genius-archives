@@ -16,7 +16,7 @@
                 </button>
             </div>
 
-            <div class="space-y-4 justify-self-center">
+            <div class="space-y-4 justify-self-center ">
                 <slot/>
             </div>
         </div>
