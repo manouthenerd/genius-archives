@@ -36,13 +36,11 @@
                 <ModalItem>
                      <Button>
                         <span v-if="! form.processing">Se connecter</span>
-                        <Transition>
                             <Loader 
                                 v-if="form.processing" 
                                 color="white"
                                 class="animate-spin"
                             />
-                        </Transition>
                      </Button>
                 </ModalItem>
             </div>

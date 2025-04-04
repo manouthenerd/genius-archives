@@ -15,9 +15,7 @@
                     <th scope="col" class="px-6 py-3">
                         Quota d'espace
                     </th>
-                    <th scope="col" class="px-6 py-3">
-                        Durée de vie
-                    </th>
+                
                     <th scope="col" class="px-6 py-3">
                         Status
                     </th>
@@ -46,18 +44,25 @@
                         />
                     </td>
                     <td class="px-6 py-4">
-                        {{ key.disk_space }}
+                        {{ key.disk_space }} Go
                     </td>
-                    <td class="px-6 py-4">
-                        {{ key.lifetime }} jours
-                    </td>
+                 
                     <td class="px-6 py-4">
                         {{ key.user_id == null ? 'libre' : 'occupée' }}
                     </td>
 
-                    <td class="px-6 py-4">
-                        <Link class="p-2 rounded-sm text-center text-white bg-blue-500">
+                    <td class="px-6 py-4 flex gap-2">
+                        <Link 
+                            :href="`/access-keys/${key.id}`"
+                            class="p-2 rounded-sm text-center text-white bg-blue-500">
                         modifier
+                        </Link>
+                        <Link 
+                            method="delete"
+                            as="button"
+                            :href="`/access-keys/${key.id}`"
+                            class="p-2 rounded-sm text-center text-white bg-red-500">
+                        supprimer
                         </Link>
                     </td>
                 </tr>

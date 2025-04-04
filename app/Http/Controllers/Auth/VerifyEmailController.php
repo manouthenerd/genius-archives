@@ -30,7 +30,7 @@ class VerifyEmailController extends Controller
             }
 
             if ($request->user('member')->markEmailAsVerified()) {
-                event(new Verified($request->user()));
+                event(new Verified($request->user('member')));
             }
         }
 

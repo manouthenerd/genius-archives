@@ -23,7 +23,6 @@ class AccessKeysRequest extends FormRequest
     {
         return [
             'key'           => ['required', 'string', 'min:36', 'max:36', 'uuid', 'unique:access_keys,key'],
-            'lifetime'      => ['required', 'integer', 'numeric', 'min:0'],
             'disk_space'    => ['required', 'integer', 'numeric']
         ];
     }
@@ -37,10 +36,6 @@ class AccessKeysRequest extends FormRequest
             'key.max'               =>  'La longueur de la clé doit être de :max caractères',
             'key.uuid'              =>  'La clé d\'accès fournie est incorrecte',
             'key.unique'            =>  'Cette clé d\'accès existe déjà',
-            'lifetime.required'     => 'Ce champ est obligatoire',
-            'lifetime.integer'      => 'Veuillez entrer une valeur numérique',
-            'lifetime.numeric'      => 'Veuillez entrer une valeur numérique',
-            'lifetime.min'          => 'La durée de vie minimale doit être :min',
             'disk_space.required'   => 'Ce champ est requis',
             'disk_space.integer'    => 'Veuillez entrer une valeur numérique',
             'disk_space.numeric'    => 'Veuillez entrer une valeur numérique',

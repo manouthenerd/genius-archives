@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('email');
             $table->string('role')->default('membre');
             $table->string('disk_space');
-            $table->boolean('can_view_private_folders')->default(false);
             $table->string('password');
+            $table->enum('status', ['enable', 'disable'])->default('enable');
             $table->timestamp('email_verified_at')->nullable()->default(NULL);
             $table->rememberToken();
             $table->softDeletes();

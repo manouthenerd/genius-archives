@@ -26,14 +26,6 @@
                             text="Le nom d'origine de chaque fichier sera remplacé par le titre que vous avez entré au dessus 🔝" />
                     </div>
 
-                    <div class="w-full">
-                        <label for="content">Contexte ou description</label>
-                        <div>
-                            <textarea v-model="form.description" name="content" id="content"
-                                class="w-full field-sizing-content focus:ring-1 rounded-sm resize-y"
-                                placeholder="Un résumé ou une brève description du contenu et de la finalité du document"></textarea>
-                        </div>
-                    </div>
 
                     <div class="w-full">
                         <label for="content">Ranger dans le dossier:</label>
@@ -137,7 +129,6 @@ const form = useForm({
     title: "",
     file: "",
     folder: "",
-    description: "",
 })
 
 const filePreview = ref(null);

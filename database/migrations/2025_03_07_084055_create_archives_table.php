@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Folder;
+use App\Models\MemberFolder;
+use App\Models\UserFolder;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,7 +16,8 @@ return new class extends Migration
     {
         Schema::create('archives', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Folder::class);
+            $table->foreignIdFor(UserFolder::class)->nullable();
+            $table->foreignIdFor(MemberFolder::class)->nullable();
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('extension');

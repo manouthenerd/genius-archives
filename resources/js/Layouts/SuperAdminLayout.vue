@@ -1,6 +1,7 @@
 <template>
 
     <Head title="L'archive du futur" />
+    <Alert/>
     <div class="flex h-screen gap-2">
         <aside
             class="h-screen flex justify-between flex-col rounded-sm min-w-[215px] border-none bg-[#1c2434] shadow-lg shadow-black">
@@ -28,7 +29,7 @@
                     </li>
 
                     <li>
-                        <Link href="/mes-cles" class="flex gap-2 items-center text-white">
+                        <Link href="/access-keys" class="flex gap-2 items-center text-white">
                         <BookKey color="#2563eb" />
                         <span>Mes clés d'accès</span>
                         </Link>
@@ -116,6 +117,7 @@ import { Head, Link, usePage } from '@inertiajs/vue3';
 import { useIsComponent } from '@/composables/isComponent';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
 import { useSearchModalStore } from '@/stores/searchModal';
+import Alert from '@/Components/Alert.vue';
 import {
     LayoutGrid,
     Settings,
@@ -124,8 +126,6 @@ import {
     Menu,
     Search,
     FolderClosed,
-    UsersRound,
-    History,
     Key,
     BookKey,
 } from 'lucide-vue-next';

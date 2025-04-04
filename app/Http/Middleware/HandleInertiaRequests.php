@@ -39,8 +39,8 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user'              => $request->user('web') ? $request->user()->only('name', 'role', 'email') : [],
                 'member'            => $request->user('member') ? $request->user('member')->only('name', 'role', 'email', 'disk_space') : [],
-                'user_folders'      => $user_id ? DB::select('select id, name from folders where owner_id = ?', [$request->user()->id]) : [],
-                'member_folders'    => $member_id ? DB::select('select id, name from folders where owner_id = ?', [$request->user('member')->id]) : [],
+                'user_folders'      => $user_id ? DB::select('select id, name from user_folders where user_id = ?', [$request->user()->id]) : [],
+                'member_folders'    => $member_id ? DB::select('select id, name from member_folders where member_id = ?', [$request->user('member')->id]) : [],
             ]
         ];
     }

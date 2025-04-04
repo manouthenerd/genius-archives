@@ -46,7 +46,6 @@ class UpdateMemberFormRequest extends FormRequest
             'email'         => ['required', 'email', 'lowercase', 'string'],
             'disk_space'    => ['required', 'gt:0', "lte:$free_space"],
             'email'         => ['required', 'email', 'lowercase', 'string', Rule::unique('members', 'email')->ignore($member->id)],
-            'can_view_private_folders' => ['boolean']
         ];
     }
 

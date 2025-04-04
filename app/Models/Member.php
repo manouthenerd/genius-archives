@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -17,6 +18,11 @@ class Member extends Authenticatable implements MustVerifyEmail
     protected $guarded = [];
 
     protected $guard = 'member';
+
+    public function folders(): HasMany
+    {
+        return $this->hasMany(MemberFolder::class);
+    }
 
     protected function casts(): array
     {

@@ -12,13 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_sessions', function (Blueprint $table) {
+        Schema::create('user_folders', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class);
-            $table->string('ip_address');
-            $table->dateTime('login_at');
-            $table->dateTime('logout_at')->nullable();
-            $table->enum('status', ['online', 'offline'])->default('offline');
+            $table->string('name');
+            $table->string('access_level');
+            $table->string('visibility');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_sessions');
+        Schema::dropIfExists('user_folders');
     }
 };

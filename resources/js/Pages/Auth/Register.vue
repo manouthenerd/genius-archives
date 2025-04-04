@@ -75,14 +75,12 @@
                     </p>
                     <ModalItem>
                         <Button>
-                        S'inscrire
-                        <Transition>
-                            <LoaderCircle 
+                        <span v-if="! form.processing">S'inscrire</span>
+                            <Loader 
                                 v-if="form.processing" 
                                 color="white"
                                 class="animate-spin"
                             />
-                        </Transition>
                      </Button>
                     </ModalItem>
                 </div>
@@ -111,7 +109,7 @@ import Input from '@/Components/forms/Input.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import Error from '@/Components/forms/Error.vue';
-import { LoaderCircle } from 'lucide-vue-next';
+import { Loader } from 'lucide-vue-next';
 import Button from '@/Components/forms/Button.vue';
 
 defineOptions({

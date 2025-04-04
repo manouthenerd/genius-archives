@@ -26,6 +26,7 @@
             </tr>
         </thead>
         <tbody>
+        
             <tr 
                 v-for="member in members"
                 class="bg-white text-center border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -54,7 +55,7 @@
                     <Link 
                         as="button" 
                         method="delete" 
-                        :href="`/mes-membres/${member.id}`" 
+                        :href="`/members/${member.id}`" 
                         class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">
                         Supprimer
                     </Link>
@@ -63,6 +64,10 @@
 
         </tbody>
     </table>
+
+    <p v-if="! members.length" class="w-full text-center text-slate-700 mt-4">
+        Aucun membre n'a été ajouté !
+    </p>
 </div>
 
 </template>

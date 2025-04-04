@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Classes\DiskSpace;
 use App\Models\Member;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Password;
@@ -32,6 +33,8 @@ class MemberFormRequest extends FormRequest
 
         $user_members_disk_space = Member::where('user_id', '=', $user->id)->sum('disk_space');
 
+        // $user_members_disk_space = (new DiskSpace)->admin_members_disk_space($user->id);
+
         $free_space = $user_disk_space - $user_members_disk_space;
 
         $this->free_space = $free_space;
@@ -41,7 +44,6 @@ class MemberFormRequest extends FormRequest
             'email'         => ['required', 'email', 'lowercase', 'string', 'unique:members,email'],
             'password'      => ['required', Password::default()],
             'disk_space'    => ['required', 'gt:0', "lte:$free_space"],
-            'can_view_private_folders' => ['boolean']
         ];
     }
 

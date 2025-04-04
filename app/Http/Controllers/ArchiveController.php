@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\FileUploadRequest;
 use App\Models\Archive;
+use App\Models\MemberFolder;
+use App\Models\UserFolder;
 
 class ArchiveController extends Controller
 {
@@ -18,14 +20,16 @@ class ArchiveController extends Controller
     {
 
         $user = null;
+        $folders = [];
 
         if ($request->user('member')) {
+
             $user = $request->user('member');
+            $folders = MemberFolder::where('member_id', '=', $user->id)->get(['id', 'name', 'access_level', 'visibility']);
         } else {
             $user = $request->user();
+            $folders = UserFolder::where('user_id', '=', $user->id)->get(['id', 'name', 'access_level', 'visibility']);
         }
-
-        $folders = Folder::where('owner_id', '=', $user->id)->get(['id', 'name', 'access_level', 'visibility']);
 
         $folders = $folders->map(function ($folder) {
             $folder->name = str_replace('-', ' ', $folder->name);
@@ -53,16 +57,12 @@ class ArchiveController extends Controller
         # # # # # # # # # #
 
 
-        // Récupérer la taille du fichier en MegaOctet
+        // Récupérer la taille du fichier Octet en MegaOctet
         $file_size = $request->file->getSize() / pow(1024, 2);
 
         $title = $request->validated('title');
 
-        $description = $request->validated('description');
-
         $file_extension = $request->file->extension();
-
-
 
         $file_type = null;
 
@@ -94,7 +94,15 @@ class ArchiveController extends Controller
                 break;
         }
 
-        $folder = Folder::find($request->validated('folder'), ['id', 'name', 'access_level', 'visibility']);
+        $folder = "";
+
+        if(request()->user()) {
+            $folder = UserFolder::find($request->validated('folder'), ['id', 'name', 'access_level', 'visibility']);
+        }
+
+        if(request()->user('member')) {
+            $folder = MemberFolder::find($request->validated('folder'), ['id', 'name', 'access_level', 'visibility']);
+        }
 
         $user = request()->user() ?? request()->user('member');
 
@@ -123,15 +131,29 @@ class ArchiveController extends Controller
             ->putFileAs($directory_name_format . "/" . $folder->name, $file, "$title.$file_extension");
 
         // Enregistrer les information du fichier dans la BD
-        $archive = Archive::create([
-            'folder_id' => $folder->id,
-            'name'      => $title,
-            'description'   => $description,
-            'extension'     => $file_extension,
-            'file_type'     => $file_type,
-            'file_path'     => $file_path,
-            'file_size'     => $file_size
-        ]);
+        $archive = "";
+
+        if(request()->user()) {
+            $archive = Archive::create([
+                'user_folder_id'=> $folder->id,
+                'name'          => $title,
+                'extension'     => $file_extension,
+                'file_type'     => $file_type,
+                'file_path'     => $file_path,
+                'file_size'     => $file_size
+            ]);
+        }
+
+        if(request()->user('member')) {
+            $archive = Archive::create([
+                'member_folder_id'  => $folder->id,
+                'name'              => $title,
+                'extension'         => $file_extension,
+                'file_type'         => $file_type,
+                'file_path'         => $file_path,
+                'file_size'         => $file_size
+            ]);
+        }
 
          // Créer un fichier temporaire avec le contenu décrypté
          $this->create_temp_file($archive->id);
@@ -139,23 +161,6 @@ class ArchiveController extends Controller
         return redirect()->back();
     }
 
-    // public function download($id)
-    // {
-    //     $archive = Archive::find($id);
-
-    //     if (! $archive) {
-    //         abort(404);
-    //     }
-
-    //     // $folder = 
-
-    //     Storage::disk('public')->makeDirectory('temp'); 
-
-    //     Storage::put("public/storage/temp/$archive->name", '');
-
-    //     file_put_contents("storage/temp/$archive->name.$archive->extension", Crypt::decrypt(Storage::disk('public')->get($archive->file_path)));
-
-    // }
 
     public function create_temp_file($id)
     {
@@ -173,19 +178,35 @@ class ArchiveController extends Controller
 
     }
 
+    public function restore($id)
+    {
+        // Récupérer le modèle s'il existe
+        $archive = Archive::onlyTrashed()->findOrFail($id, ['id', 'name', 'file_path', 'extension']);
+        
+        // Vérifier l'existence du fichier lié au modèle
+            // Le restaurer si le fichier existe
+            // Le supprimer de la base de données dans le cas contraire
+        Storage::disk('public')->exists("temp/$archive->name.$archive->extension") ? $archive->restore() : $archive->forceDelete();
+
+    }
+
+    public function delete($id)
+    {
+
+
+        $archive = Archive::findOrFail($id);
+        
+        $archive->delete();
+    }
+
     public function destroy($id)
     {
-        $archive = Archive::find($id);
 
-        if (! $archive) {
-            abort(404);
-        }
+        $archive = Archive::findOrFail($id);
 
-        Storage::disk('public')->delete($archive->file_path);
-        Storage::disk('pubblic')->delete("public/storage/temp/$archive->name", '');
-
-        $archive = Archive::find($id);
-
-        $archive->delete();
+        Storage::disk('public')->delete($archive->file_path) ?? null;
+        Storage::disk('public')->delete("temp/$archive->name.$archive->extension");
+        
+        $archive->forceDelete();
     }
 }

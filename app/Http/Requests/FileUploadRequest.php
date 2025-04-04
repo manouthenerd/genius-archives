@@ -23,8 +23,7 @@ class FileUploadRequest extends FormRequest
     {
         return [
             'title'             => ['required', 'string', 'unique:archives,name'],
-            'folder'            => ['required', 'exists:folders,id', 'string'],
-            'description'       => ['required', 'string'],
+            'folder'            => ['required', 'string'],
             'file'              => ['required',  'file']
 
         ];

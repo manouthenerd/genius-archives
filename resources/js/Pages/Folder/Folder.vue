@@ -26,12 +26,13 @@
                         <p class="mt-2 flex justify-between px-1">
                             <a 
                                 :href="file.download_path"
+                                target="_blank"
                                 class="text-gray-400 font-medium hover:text-black">
                                 Télécharger
                             </a>
                             <Link 
                                 :href="`/archives/${file.id}`"
-                                as="button" method="delete">
+                                as="button" method="post">
                                 <Trash2 color="#9ca3af" class="hover:stroke-red-500"/>
                             </Link>
                         </p>

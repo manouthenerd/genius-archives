@@ -1,12 +1,13 @@
 <template>
 
     <Head title="L'archive du futur" />
+    <Alert/>
     <div class="flex h-screen gap-2">
         <aside
-            class="h-screen flex justify-between flex-col rounded-sm min-w-[215px] border-none bg-[#1c2434] shadow-lg shadow-black">
+            class="h-screen overflow-auto flex justify-between flex-col rounded-sm min-w-[215px] border-none bg-[#1c2434] shadow-lg shadow-black">
             <div id="brand" class="text-white text-center text-[18px] rounded-sm font-bold uppercase bg-blue-600">
                 <p class="flex items-center gap-1">
-                    <span class="bg-white text-blue-600">GENIUS ARCHIVES</span>
+                    <span class="bg-white text-blue-600">GENIUS DATA</span>
                     <FolderClosed color="#fff" />
                 </p>
             </div>
@@ -185,6 +186,8 @@ import CreateMember from '@/Pages/Member/CreateMember.vue';
 import { useSearchModalStore } from '@/stores/searchModal';
 import { useFoldersModalStore } from '@/stores/foldersModal';
 import { useCreateMemberModalStore } from '@/stores/createMemberModal';
+import Alert from '@/Components/Alert.vue';
+
 import {
     LayoutGrid,
     Settings,

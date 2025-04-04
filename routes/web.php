@@ -1,7 +1,6 @@
 <?php
 
 use Inertia\Inertia;
-use Illuminate\Http\Request;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\EnsureIsAuth;
 use App\Http\Middleware\IsSuperAdmin;
@@ -14,9 +13,17 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Middleware\IsSuperAdminOrAdmin;
 use App\Http\Controllers\AccessKeysController;
+use App\Http\Controllers\AdminsListController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\MembersListController;
+use Illuminate\Support\Facades\Storage;
+
+Route::get('test', function () {
+    return Storage::disk('public')->deleteDirectory('manou-thenerd-2');
+});
+
 
 //Auth + email vérifié
 Route::middleware([EnsureIsAuth::class, VerifiedEmail::class])->group(function () {
@@ -37,13 +44,17 @@ Route::middleware([VerifiedEmail::class, EnsureIsAuth::class, IsMemberOrAdmin::c
         return Inertia::render('Archives', []);
     });
 
-    Route::post('/archives/{id}', [ArchiveController::class, 'download']);
+    Route::post('/archives/{id}/restore', [ArchiveController::class, 'restore']);
 
+    
+    Route::post('/archives/{id}/', [ArchiveController::class, 'delete']);
+    
     Route::delete('/archives/{id}', [ArchiveController::class, 'destroy']);
 
     Route::post('/folders', [FolderController::class, 'store']);
-
+    
     Route::get('/folders/{id}', [FolderController::class, 'show']);
+
 
     Route::get('/nouvelle-archive', [ArchiveController::class, 'create']);
 
@@ -55,9 +66,14 @@ Route::middleware([VerifiedEmail::class, EnsureIsAuth::class, IsMemberOrAdmin::c
 // Superadmin
 Route::middleware([EnsureIsAuth::class, VerifiedEmail::class, IsSuperAdmin::class])->group(function () {
 
-    Route::get('/mes-cles', [AccessKeysController::class, 'index'])->name('access-keys');
+    Route::get('/access-keys', [AccessKeysController::class, 'index'])->name('access-keys');
+    Route::get('/access-keys/{id}', [AccessKeysController::class, 'edit'])->name('access-keys.edit');
+    Route::put('/access-keys/{id}', [AccessKeysController::class, 'update']);
+    Route::delete('/access-keys/{id}', [AccessKeysController::class, 'destroy']);
     Route::get('/nouvelle-clee', [AccessKeysController::class, 'create'])->name('access-keys.create');
     Route::post('/nouvelle-clee', [AccessKeysController::class, 'store'])->name('access-keys.create');
+    Route::get('/admins', [AdminsListController::class, 'index'])->name('admins');
+    Route::get('/members', [MembersListController::class, 'index'])->name('members');
 
 })->name('superadmin');
 
@@ -67,7 +83,8 @@ Route::middleware([EnsureIsAuth::class, IsAdmin::class, VerifiedEmail::class])->
     Route::get('/mes-membres', [MemberController::class, 'index'])->name('members');
     Route::get('/mes-membres/{id}/edit', [MemberController::class, 'show'])->name('show-member');
     Route::patch('/mes-membres/{id}/edit', [MemberController::class, 'update'])->name('edit-member');
-    Route::delete('/mes-membres/{id}', [MemberController::class, 'destroy']);
+    Route::post('/members/{id}/restore', [MemberController::class, 'restore']);
+    Route::delete('/members/{id}', [MemberController::class, 'delete']);
 
     Route::get('/nouveau-membre', function() {
         return abort(404);

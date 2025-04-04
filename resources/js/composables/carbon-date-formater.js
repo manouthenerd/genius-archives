@@ -2,7 +2,7 @@ export function useCarbonDateFormater() {
 
     const dateOnly = (date) => {
         
-        return date.split('T')[0]
+        return date.split('T')[0].split('-').reverse().join('-')
     }
 
     const timeOnly = (date) => {

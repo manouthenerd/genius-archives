@@ -1,13 +1,13 @@
 <template>
 
 
-    <div class="w-full space-y-8 p-2">
+    <div class="w-full space-y-8 p-2 h-full z-0 grid">
 
 
         <div class="relative overflow-x-auto ">
             <table class="w-full rounded border border-slate-200  text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <caption class="caption-top text-center round-sm-b p-2 bg-slate-700 border border-slate-200">
-                    <Link class="bg-gray-100 rounded p-1">Voir toute la liste des clés générées</Link>
+                    <Link href="/access-keys" class="bg-gray-100 rounded p-1">Voir toute la liste des clés générées</Link>
                 </caption>
                 <thead class="text-xs text-gray-900 dark:text-gray-400">
                     <tr class="text-center whitespace-nowrap">
@@ -21,9 +21,6 @@
                             Quota d'espace
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Durée de vie
-                        </th>
-                        <th scope="col" class="px-6 py-3">
                             Status
                         </th>
                         <th scope="col" class="px-6 py-3">
@@ -33,27 +30,24 @@
                 </thead>
                 <tbody>
                     <tr 
-                        v-for="key in keys.data"
+                        v-if="access_key.id"
                         class="bg-white dark:bg-gray-800 text-center whitespace-nowrap"
                     >
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ key.id }}
+                            {{access_key ? access_key.id : ''}}
                         </th>
                         <td class="px-6 py-4">
-                            {{ key.key }}	
+                            {{access_key ? access_key.key : ''}}	
                         </td>
                         <td class="px-6 py-4">
-                            {{ key.disk_space }} MO
+                            {{access_key ? access_key.disk_space : ''}} Go
                         </td>
                         <td class="px-6 py-4">
-                            {{ key.lifetime }} jours 
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ key.user_id == null ? 'libre' : 'occupée' }}
+                            {{access_key ? access_key.user_id == null ? 'libre' : 'occupée' : ''}}
                         </td>
                         
                         <td class="px-6 py-4">
-                            <Link class="p-2 rounded-sm text-center text-white bg-blue-600 hover:opacity-100">
+                            <Link :href="`/access-keys/${access_key ? access_key.id : ''}`" class="p-2 rounded-sm text-center text-white bg-blue-600 hover:opacity-100">
                                 modifier
                             </Link>
                         </td>
@@ -66,7 +60,7 @@
         <div class="relative overflow-x-auto">
             <table class="w-full border border-slate-200 rounded text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <caption class="caption-top text-center round-sm-b p-2 bg-slate-700 border border-slate-200">
-                    <Link class="bg-gray-100 rounded p-1">Voir toute la liste des administrateurs</Link>
+                    <Link href="/admins" class="bg-gray-100 rounded p-1">Voir toute la liste des administrateurs</Link>
                 </caption>
                 
                 <thead class="text-xs text-gray-900  dark:text-gray-400 w-full">
@@ -92,27 +86,32 @@
                 </thead>
                 <tbody>
                     <tr 
-                        v-for="admin in admins.data"
+                        v-if="admin"
                         class="bg-white dark:bg-gray-800 text-center whitespace-nowrap"
                     >
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ admin.id }}
+                            {{admin ? admin.id : ''}}
                         </th>
                         <td class="px-6 py-4">
-                            {{ admin.name }}	
+                            {{admin ? admin.name : ''}}	
                         </td>
                         <td class="px-6 py-4">
-                            {{ admin.email }}
+                            {{admin ? admin.email : ''}}
                         </td>
                         <td class="px-6 py-4">
-                            {{ admin.role }}
+                            {{admin ? admin.role : ''}}
                         </td>
                         <td class="px-6 py-4">
-                            clé n°2
+                            <Link 
+                                class="text-blue-500 font-bold"
+                                :href="`/access-keys/${admin ? admin.access_key : ''}`"
+                            >
+                                {{admin ? admin.access_key : ''}}
+                            </Link>
                         </td>
-                        <td class="px-6 py-4">
-                            <Link class="p-2 rounded-sm text-center text-white bg-blue-600 hover:opacity-100">
-                                modifier
+                        <td v-if="admin.name" class="px-6 py-4">
+                            <Link class="p-2 rounded-sm text-center text-white bg-red-600 hover:opacity-100">
+                                supprimer
                             </Link>
                         </td>
                     </tr>
@@ -125,7 +124,7 @@
             <table class="w-full border border-slate-200 rounded text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 
                 <caption class="caption-top text-center round-sm-b p-2 bg-slate-700 border border-slate-200">
-                    <Link class="bg-gray-100 rounded p-1">Voir toute la liste des membres</Link>
+                    <Link href="/members" class="bg-gray-100 rounded p-1">Voir toute la liste des membres</Link>
                 </caption>
                 <thead class="text-xs text-gray-900  dark:text-gray-400 w-full">
                     <tr 
@@ -151,23 +150,29 @@
                 </thead>
                 <tbody>
                     <tr 
-                        v-for="member in members.data"
+                        v-show="member"
                         class="bg-white dark:bg-gray-800 text-center"
                     >
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ member.id }}
+                            {{member ? member.id : ''}}
                         </th>
                         <td class="px-6 py-4">
-                            {{ member.name }}
+                            {{member ? member.name : ''}}
                         </td>
                         <td class="px-6 py-4">
-                            {{ member.email }}
+                            {{member ? member.email : ''}}
                         </td>
                         <td class="px-6 py-4">
-                            {{ member.role }}
+                            {{member ? member.role : ''}}
                         </td>
                         <td class="px-6 py-4">
-                            Genius Network
+                                {{member ? member.admin : ''}}
+                        </td>
+
+                        <td v-show="member.name" class="px-6 py-4">
+                            <Link class="p-2 rounded-sm text-center text-white bg-red-600 hover:opacity-100">
+                                supprimer
+                            </Link>
                         </td>
                         
                     </tr>
@@ -181,20 +186,15 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
 import SuperAdminLayout from '@/Layouts/SuperAdminLayout.vue';
-import ModalItem from '@/Components/modals/ModalItem.vue';
-import Input from '@/Components/forms/Input.vue';
-import SubmitButton from '@/Components/forms/SubmitButton.vue';
-import Select from '@/Components/forms/Select.vue';
-import Note from '@/Components/Note.vue';
-import { CheckCheck, Copy } from 'lucide-vue-next';
+
 defineOptions({
     layout: SuperAdminLayout
 })
 
 defineProps({
-    members: Object,
-    admins: Object,
-    keys: Object
+    member: Object,
+    admin: Object,
+    access_key: Object
 })
 </script>
 

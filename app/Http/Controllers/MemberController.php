@@ -8,9 +8,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Member;
 use Illuminate\Support\Arr;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
+
 
 class MemberController extends Controller
 {
@@ -42,9 +40,8 @@ class MemberController extends Controller
 
     public function show(Member $id)
     {
-        $member = $id->only('id', 'name', 'email', 'disk_space', 'user_id', 'can_view_private_folders');
+        $member = $id->only('id', 'name', 'email', 'disk_space', 'user_id');
 
-        $member['can_view_private_folders'] = (bool) $member['can_view_private_folders'];
 
         return Inertia::render('Member/EditMember', ['member' => $member]);
     }
@@ -57,7 +54,6 @@ class MemberController extends Controller
             'name'  => $request->input('name'),
             'email'  => $request->input('email'),
             'disk_space'  => $request->input('disk_space'),
-            'can_view_private_folders'  => $request->input('can_view_private_folders')
         ]);
 
         $member->save();
@@ -71,10 +67,22 @@ class MemberController extends Controller
 
     }
 
-    public function destroy($id)
+    public function restore($id)
+    {
+        // Récupérer le modèle s'il existe
+        $member = Member::onlyTrashed()->findOrFail($id);
+
+        $member->restore();
+
+    }
+
+    public function delete($id)
     {
         Member::find($id)->delete();
+    }
 
-        return redirect()->back()->with('status', 'Membre supprimé avec succès');
+    public function destroy($id)
+    {
+        Member::find($id)->forceDelete();
     }
 }

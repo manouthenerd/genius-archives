@@ -19,7 +19,24 @@ class EnsureIsAuth
 
         if(Auth::guard('member')->check() || Auth::check()) {
 
-            return $next($request);
+            if($request->user('member') && $request->user('member')->status !== 'enable') {
+                Auth::guard('member')->logout();
+                header("Location: /");
+                return redirect('/connexion');
+            } else {
+
+                return $next($request);
+            } 
+
+            if($request->user() && $request->user()->status !== 'enable') {
+                Auth::logout();
+                header("Location: /");
+                return redirect('/connexion');
+            }else {
+
+                return $next($request);
+            } 
+            
         }
 
         return redirect('/connexion');

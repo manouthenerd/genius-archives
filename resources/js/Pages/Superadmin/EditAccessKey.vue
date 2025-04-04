@@ -7,39 +7,26 @@
         >
             <ModalItem>
                 <label for="access_key">
-                    Générer une clé
+                    Clé actuelle
                 </label>
                 <div class="flex flex-wrap justify-between">
-                    <div class="flex items-center gap-2 w-[80%]">
+                    <div class="flex items-center gap-2 w-full">
                         <Input 
                             class="bg-[aliceblue] w-full" 
                             type="text" 
                             disabled id="access_key"
                             placeholder="Clés d'accès..." 
-                            v-model="form.key"
+                            v-model="access_key.key"
                         />
-                        <span>
-                            <Copy v-if="clipboard.status == false" class="stroke-slate-600" @click="clipboard.copyToClipboard(form.key)" />
-                            <CheckCheck 
-                                v-if="clipboard.status"
-                                class="stroke-green-500"
-                            />
-                        </span>
                     </div>
-                    <Input 
-                        @click.prevent="generateAccessKey()" 
-                        type="image" 
-                        class="border-slate-500 bg-slate-300 rounded"
-                        src="/icons/generate-password.svg" 
-                        alt="icon for password genenration" 
-                    />
+                    
                 </div>
                 <Error
                     v-if="form.errors.key"
                     :message="form.errors.key"
                 />
             </ModalItem>
-        
+    
             <ModalItem>
                 <label for="disk_space">
                     Quota d'espace associé
@@ -64,13 +51,16 @@
                 />
             </ModalItem>
             <ModalItem>
-                <SubmitButton 
-                    :disabled="! isFilled || form.processing"
-                    value="Enregistrer la clé" 
+                
+                <Button 
                     :class="{'cursor-not-allowed grayscale pointer-events-none' : ! isFilled}"
-                />
+                    :disabled="! isFilled || form.processing"
+                >
+                    <span v-if="! form.processing">Sauvegarder</span>
+                    <Loader class="animate-spin" v-if="form.processing"/>
+                </Button>
 
-                <Link href="/access-keys"
+                <Link href="/mes-cles"
                     class="mt-4 text-xs underline text-blue-500 font-bold hover:no-underline transition-all">
                 Voir la liste des clés générées
                 </Link>
@@ -80,49 +70,45 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 import SuperAdminLayout from '@/Layouts/SuperAdminLayout.vue';
 import ModalItem from '@/Components/modals/ModalItem.vue';
 import Input from '@/Components/forms/Input.vue';
 import SubmitButton from '@/Components/forms/SubmitButton.vue';
 import Select from '@/Components/forms/Select.vue';
-import { CheckCheck, Copy } from 'lucide-vue-next';
-import { computed } from 'vue';
-import Error from '@/Components/forms/Error.vue';
-import { useClipboard } from '@/stores/clipboard';
+import Error from '@/Components/forms/Error.vue'; 
 import { useAlertStore } from '@/stores/alert';
+import Button from '@/Components/forms/Button.vue';
+import { Loader } from 'lucide-vue-next';
+
 
 defineOptions({
     layout: SuperAdminLayout
 })
 
 const props = defineProps({
-    access_key: String
+    access_key: Object,
 })
 
-const alert = useAlertStore()
+const alert = useAlertStore();
 
-const clipboard = useClipboard()
 
 const form = useForm({
-    key: '',
-    disk_space: "",
-    disk_unity: "Mo"
+    key: props.access_key.key,
+    disk_space: props.access_key.disk_space,
+    disk_unity: "Go",
 })
 
 const isFilled = computed(() => {
-    return ( Boolean((form.key !== "") && (form.lifetime !== "") && (form.disk_space !== "")))
+    return ( Boolean((props.access_key.key !== "") && (props.access_key.disk_space > 0)))
 })
 
-const generateAccessKey = () => {
-    form.key = props.access_key
-    useForm().get(usePage().url, {preserveState: true});
-}
 
 const submit = () => {
-    form.post(route('access-keys.create'), {
+    form.put(usePage().url, {
         onSuccess: () => {
-            form.reset()
+            alert.setMessage('Modification effectuée avec succès ! 🎉')
             alert.showAlert()
         }
     })

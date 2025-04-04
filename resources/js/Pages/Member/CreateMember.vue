@@ -66,20 +66,6 @@
                         />
                      </ModalItem>
 
-                    <ModalItem class="space-y-2">
-                        <label>Définition des autorisations</label>
-                            <label id="access" class="flex items-center gap-1">
-                                <input 
-                                    v-model="member.can_view_private_folders" 
-                                    type="checkbox" 
-                                    name="access" 
-                                    for="access"
-                                >
-                                Peut accéder aux dossiers privés
-                            </label>
-                            
-                    </ModalItem>
-
                     <ModalItem>
                         <Button>
                             <span v-if="! member.processing">Créer</span>
@@ -112,7 +98,6 @@ const member = useForm({
     email: "",
     password: "",
     disk_space: "",
-    can_view_private_folders: false,
 })
 
 const submit = () => {

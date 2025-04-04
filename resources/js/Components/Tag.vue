@@ -1,5 +1,5 @@
 <template>
-    <Link :href class="flex rounded-md shadow-sm gap-1 p-1 items-center h-[25px] bg-[lightGray]">
+    <Link :href class="flex pointer-events-none rounded-md shadow-sm gap-1 p-1 items-center h-[25px] bg-[lightGray]">
     {{ title }}
     <Tag size="20px"/>
     <span
