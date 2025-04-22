@@ -1,31 +1,19 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class DeleteAllFromUser implements ShouldQueue
+class DeleteAllFromUser extends Controller
 {
-    use Queueable;
+    protected User $user;
 
-    protected $user;
-
-    /**
-     * Create a new job instance.
-     */
-    public function __construct($user)
+    public function execute(User $user)
     {
         $this->user = $user;
-    }
-
-    /**
-     * Execute the job.
-     */
-    public function handle(): void
-    {
+        
         // Récupérer les dossiers de l'admin
         $admin_folders = $this->user->folders;
 
@@ -90,7 +78,6 @@ class DeleteAllFromUser implements ShouldQueue
 
         // Supprimer les archives des membres en base de données et en physique
         $admin_archives->map(function ($archive) {
-            dump("temp/$archive->name.$archive->extension");
             Storage::disk('public')->delete($archive->file_path);
             Storage::disk('public')->delete("temp/$archive->name.$archive->extension");
             deleteTarget($archive);
@@ -106,6 +93,5 @@ class DeleteAllFromUser implements ShouldQueue
         $this->user->save();
 
         Storage::disk('public')->deleteDirectory($directory_name);
-
     }
 }

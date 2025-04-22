@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Archive;
 use Inertia\Inertia;
-use App\Models\Folder;
 use App\Models\MemberFolder;
 use App\Models\UserFolder;
 use Illuminate\Support\Arr;
@@ -14,19 +13,20 @@ use Illuminate\Support\Facades\Storage;
 
 class FolderController extends Controller
 {
+
     public function show($id, Request $request)
     {
-        
+
         $folder = [];
 
         $files = [];
 
-        if($request->user()) {
+        if ($request->user()) {
             $folder = UserFolder::findOrFail($id);
             $files = Archive::where('user_folder_id', '=', $id)->get();
         }
 
-        if($request->user('member')) {
+        if ($request->user('member')) {
             $folder = MemberFolder::findOrFail($id);
             $files = Archive::where('member_folder_id', '=', $id)->get();
         }
@@ -34,8 +34,6 @@ class FolderController extends Controller
         if (! $folder) {
             return abort(404);
         }
-
-        // dd($files, $folder);
 
         $files = $files->map(function ($file) {
 
@@ -58,7 +56,7 @@ class FolderController extends Controller
 
         return Inertia::render('Folder/Folder', [
             'files'     => $files,
-            'folder'    => $folder->name
+            'folder'    => ['id' => $folder->id, 'name' => $folder->name]
         ]);
     }
 
@@ -72,7 +70,7 @@ class FolderController extends Controller
 
         $validated['name'] = Str::slug($validated['name']);
 
-        if($request->user('member')) {
+        if ($request->user('member')) {
 
             $user = $request->user('member')->id;
 
@@ -81,7 +79,7 @@ class FolderController extends Controller
             MemberFolder::create($folder);
         }
 
-        if($request->user()) {
+        if ($request->user()) {
 
             $user = $request->user()->id;
 
@@ -91,5 +89,66 @@ class FolderController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function delete($id)
+    {
+
+        $folder = UserFolder::find($id, ['id', 'name']);
+
+        // $folder_path = $this->folder_name($folder->name);
+
+        // Storage::disk('public')->deleteDirectory($folder_path);
+
+        $folder_files = $folder->archives;
+
+        $folder_files->map(fn($file) => $file->delete());
+
+        $folder->delete();
+
+        return redirect('/');
+    }
+
+    public function restore($id)
+    {
+        $folder = UserFolder::withTrashed()->find($id, ['id']);
+
+        $folder->restore();
+
+        return redirect()->back();
+    }
+
+    public function destroy($id)
+    {
+
+        $folder = UserFolder::withTrashed()->find($id, ['id', 'name']);
+
+        $folder_path = $this->folder_name($folder->name);
+
+        Storage::disk('public')->deleteDirectory($folder_path);
+
+        $folder->forceDelete();
+
+        return redirect()->back();
+    }
+
+    public function folder_name($folder)
+    {
+        $folder_path = "";
+
+        if (request()->user('member')) {
+            $folder_path = Str::slug(request()->user('member')->name) . "-" . request()->user('member')->id;
+            $folder_path .= "/$folder";
+        } else {
+            $folder_path = Str::slug(request()->user()->name)  . "-" . request()->user()->id;
+            $folder_path .= "/$folder";
+        }
+
+        return $folder_path;
+    }
+
+    public function delete_temporary_file($file_name)
+    {
+        return Storage::disk('public')->delete("storage/temp/$file_name");
     }
 }

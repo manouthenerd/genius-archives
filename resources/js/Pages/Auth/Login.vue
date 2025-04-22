@@ -34,14 +34,10 @@
 
             <div>
                 <ModalItem>
-                     <Button>
-                        <span v-if="! form.processing">Se connecter</span>
-                            <Loader 
-                                v-if="form.processing" 
-                                color="white"
-                                class="animate-spin"
-                            />
-                     </Button>
+                    <Button>
+                        <span v-if="!form.processing">Se connecter</span>
+                        <Loader v-if="form.processing" color="white" class="animate-spin" />
+                    </Button>
                 </ModalItem>
             </div>
         </form>
@@ -51,10 +47,15 @@
 
         <div id="skew-box"
             class="h-full w-[262px] flex flex-col justify-around border border-solid border-slate-200 text-white font-bold p-2 rounded-sm space-y-4">
-            <div class="text-center text-white bg-black p-0.5 rounded ">
+            <div class="text-white translate-y-[-27px] bg-black p-0.5 rounded ">
                 <p>
-                    Genius <span class="text-blue-500">Archives</span>
+                    Genius <span class="text-blue-500">Data:</span> propulsé par
                 </p>
+                <div id="brand" class="text-white text-center text-[18px] rounded-sm font-bold uppercase bg-white">
+                    <p class="flex items-center gap-1">
+                        <img class="h-[100px] w-full object-cover" src="/image/logo-genius.png" alt="App logo">
+                    </p>
+                </div>
 
             </div>
 
@@ -97,12 +98,12 @@ form,
 
 form {
     align-content: center;
-    transform: skewY(-16deg);
+    transform: skewY(-13deg);
     border-top-right-radius: 20px;
 }
 
 #skew-box {
-    transform: skewY(18deg);
+    transform: skewY(15deg);
     border-top-left-radius: 20px;
 }
 
@@ -117,5 +118,4 @@ form {
     transform: skewY(0);
     border-top-left-radius: 0;
 }
-
 </style>

@@ -83,6 +83,9 @@ class MemberController extends Controller
 
     public function destroy($id)
     {
-        Member::find($id)->forceDelete();
+        
+        $member = Member::onlyTrashed()->find($id);
+
+        $member->forceDelete();
     }
 }

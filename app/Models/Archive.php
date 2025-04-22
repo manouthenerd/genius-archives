@@ -16,6 +16,6 @@ class Archive extends Model
 
     public function folder(): BelongsTo
     {
-        return $this->belongsTo(Folder::class);
+        return $this->belongsTo(UserFolder::class) ?? $this->belongsTo(MemberFolder::class);
     }
 }

@@ -1,22 +1,22 @@
 <template>
-
     <Head title="L'archive du futur" />
     <Alert/>
+    <ConfirmationModal :message="message"/>
+    
     <div class="flex h-screen gap-2">
         <aside
             class="h-screen overflow-auto flex justify-between flex-col rounded-sm min-w-[215px] border-none bg-[#1c2434] shadow-lg shadow-black">
-            <div id="brand" class="text-white text-center text-[18px] rounded-sm font-bold uppercase bg-blue-600">
-                <p class="flex items-center gap-1">
-                    <span class="bg-white text-blue-600">GENIUS DATA</span>
-                    <FolderClosed color="#fff" />
-                </p>
+            <div id="brand" class="text-white text-center text-[18px] rounded-sm font-bold uppercase bg-white">
+                <a href="/" class="flex items-center gap-1">
+                    <img class="h-[100px] w-full object-cover" src="/image/logo-genius.png" alt="App logo">
+                </a>
             </div>
 
             <div>
                 <ul class="flex flex-col gap-4 ml-2">
                     <li>
                         <Link href="/" class="flex gap-2 items-center text-white">
-                        <LayoutGrid color="#2563eb" />
+                        <LayoutGrid color="#0074B8" />
                         <span :class="useIsComponent('Home') ? styles : ''">Dashboard</span>
                         </Link>
                     </li>
@@ -26,7 +26,7 @@
 
                             <summary class="flex gap-2 items-center text-white"
                                 :class="useIsComponent('Archives') ? styles : ''">
-                                <FolderArchive color="#2563eb" />
+                                <FolderArchive color="#0074B8" />
                                 Mes Dossiers
                                 <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960"
                                     width="30px" fill="#fff">
@@ -70,20 +70,20 @@
 
                     <li>
                         <Link href="/nouvelle-archive" class="flex gap-2 items-center text-white">
-                        <FileText color="#2563eb" />
+                        <FileText color="#0074B8" />
                         <span :class="useIsComponent('CreateArchive') ? styles : ''">Nouvelle archive</span>
                         </Link>
                     </li>
 
                     <li v-show="isAdmin">
                         <button @click="createMemberModal.openModal()" class="flex gap-2 items-center text-white">
-                            <UserRoundPlus color="#2563eb" />
+                            <UserRoundPlus color="#0074B8" />
                             <span>Ajouter un membre </span>
                         </button>
                     </li>
                     <li v-show="isAdmin">
                         <Link href="/mes-membres" class="flex gap-2 items-center text-white">
-                        <UsersRound color="#2563eb" />
+                        <UsersRound color="#0074B8" />
                         <span>Mes membres</span>
                         </Link>
                     </li>
@@ -94,19 +94,19 @@
                 <ul class="flex flex-col gap-2 ml-2">
                     <li v-show="isAdmin">
                         <Link href="/historique" class="flex gap-2 items-center text-white">
-                        <History color="#2563eb" />
+                        <History color="#0074B8" />
                         <span :class="useIsComponent('Historique') ? styles : ''">Historique</span>
                         </Link>
                     </li>
                     <li>
                         <Link href="/parametres" class="flex gap-2 items-center text-white">
-                        <Settings color="#2563eb" />
+                        <Settings color="#0074B8" />
                         <span :class="useIsComponent('Settings') ? styles : ''">Paramètres</span>
                         </Link>
                     </li>
                     <li v-show="isAdmin">
                         <Link href="/corbeille" class="flex gap-2 items-center text-white">
-                        <Trash2Icon color="#2563eb" />
+                        <Trash2Icon color="#0074B8" />
                         <span>Corbeille</span>
                         </Link>
                     </li>
@@ -176,7 +176,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onUnmounted } from 'vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { useIsComponent } from '@/composables/isComponent';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
@@ -187,6 +187,8 @@ import { useSearchModalStore } from '@/stores/searchModal';
 import { useFoldersModalStore } from '@/stores/foldersModal';
 import { useCreateMemberModalStore } from '@/stores/createMemberModal';
 import Alert from '@/Components/Alert.vue';
+import ConfirmationModal from '@/Components/modals/ConfirmationModal.vue';
+import { useAlertStore } from '@/stores/alert';
 
 import {
     LayoutGrid,
@@ -199,7 +201,6 @@ import {
     LogOut,
     Menu,
     Search,
-    FolderClosed,
     UsersRound,
     History,
 } from 'lucide-vue-next';
@@ -216,7 +217,7 @@ const createMemberModal = useCreateMemberModalStore()
 
 const date = ref(new Date().getFullYear())
 
-const styles = "text-blue-600 font-bold"
+const styles = "text-[#0074B8] font-bold"
 
 const resize = () => {
     const aside = document.querySelector('aside')
@@ -224,9 +225,16 @@ const resize = () => {
     aside.classList.toggle('w-[300px]')
 }
 
+const alert = useAlertStore();
+
 const isAdmin = computed(() => {
     return user.role == 'administrateur'
 })
+
+const message = "Voulez-vous vraiment supprimer ce dossier ainsi que tout le contenu ?"
+
+onUnmounted(() => alert.hideAlert())
+
 
 
 </script>
@@ -244,7 +252,7 @@ li button {
 
 a:hover,
 li button:hover {
-    color: #2563eb;
+    color: #0074B8;
 }
 élément {
   white-space: nowrap;

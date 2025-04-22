@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('extension');
             $table->string('file_type');
             $table->string('file_path');
-            $table->decimal('file_size', 16, 13);
+            $table->decimal('file_size', 30,13);
             $table->softDeletes();
             $table->timestamps();
         });

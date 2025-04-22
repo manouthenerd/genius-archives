@@ -28,11 +28,9 @@
                 </p>
 
                 <ModalItem>
-                    <Button :disabled="form.processing" class="flex items-center justify-center gap-1">
-                        <Transition>
-                            <LoaderCircle v-if="form.processing" class="animate-spin" />
-                        </Transition>
-                        <span>Envoyer</span>
+                    <Button>
+                        <span v-if="!form.processing">Envoyer</span>
+                        <Loader v-if="form.processing" color="white" class="animate-spin" />
                     </Button>
                 </ModalItem>
         </form>
@@ -46,10 +44,8 @@ import Input from '@/Components/forms/Input.vue';
 import Button from '@/Components/forms/Button.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import SubmitButton from '@/Components/forms/SubmitButton.vue';
 import Error from '@/Components/forms/Error.vue';
-import { computed } from 'vue';
-import { LoaderCircle } from 'lucide-vue-next';
+import { Loader } from 'lucide-vue-next';
 
 defineOptions({
     layout: GuestLayout

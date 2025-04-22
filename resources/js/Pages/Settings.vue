@@ -4,34 +4,52 @@
     <section class="bg-white mt-8">
         <div class="flex flex-wrap items-center justify-between ">
             <SectionHead title="Informations du profil" />
-            <Link v-show="useIsUrl('/parametres')" href="/parametres/edit"
+            <Link v-if="useIsUrl('/parametres')" href="/parametres/edit"
                 class="bg-blue-400 hover:bg-blue-500 transition-colors font-bold text-white p-2 rounded-md self-center">
             Editer le profil
             </Link>
+            <Link v-else="useIsUrl('/parametres/edit')" href="/parametres"
+                class="bg-blue-400 hover:bg-blue-500 transition-colors font-bold text-white p-2 rounded-md self-center">
+            Revenir en arrière
+            </Link>
+
         </div>
         <div class="flex max-w-[400px]">
-            <form class="space-y-2" enctype="multipart/form-data" action="/settings" method="post">
+            <form @submit.prevent="updateProfile()" class="space-y-2">
 
                 <div class="mt-4 flex p-2">
 
                     <div class="flex items-center gap-2 ">
 
                         <div class="flex ">
-                            <ProfilePicture :name="user.name ?? member.name" />
+
+                            <ProfilePicture v-if="useIsUrl('/parametres')" :name="user.name" />
+
+                            <div v-else>
+                                <input @input="updateProfilePicture($event.target.files[0])" id="button" type="file"
+                                    hidden accept="image/*">
+                                <label for="button" id="uploadButton" class="grid justify-items-center">
+                                    <Upload v-if="form.file"
+                                        class="stroke-transparent hover:stroke-white transition-colors absolute top-[175px]" />
+                                    <img v-if="form.file" for="button" class="size-[50px] rounded-full"
+                                        :src="filePreview" alt="profile picture">
+                                    <ProfilePicture v-if="!form.file" :name="user.name" />
+                                </label>
+                            </div>
 
                             <!-- Visible if not edit page -->
                             <ul class="ml-2">
-                                <li v-show="useIsUrl('/parametres')">{{ user.name ?? member.name }}</li>
+                                <li v-show="useIsUrl('/parametres')">{{ user.name }}</li>
                                 <li v-show="useIsUrl('/parametres/edit')">
                                     <label for="username" class="flex gap-1">
-                                        <input
+                                        <input v-model="form.username"
                                             class="bg-white border-x-0 border-t-0 p-0 w-full rounded-sm focus:outline-0 border border-gray-300 outline-none"
-                                            type="text" name="username" id="username" :value="user.name ?? member.name"
-                                            autocomplete="username">
+                                            type="text" name="username" id="username" autocomplete="username">
                                         <img src="/icons/edit.svg" alt="edit icon">
                                     </label>
                                 </li>
-                                <li class="text-lightGray">{{ user.role ?? member.role }}</li>
+                                <Error v-if="useIsUrl('/parametres/edit')" :message="form.errors.username"/>
+                                <li class="text-lightGray">{{ user.role }}</li>
                             </ul>
                         </div>
 
@@ -48,7 +66,7 @@
                             <label for="password">Adresse email</label>
                             <div>
                                 <input class="bg-[beige] w-full rounded-sm focus:outline-none border border-gray-300"
-                                    type="text" name="email" id="email" disabled :value="user.email ?? member.email">
+                                    type="text" name="email" id="email" disabled :value="user.email">
                             </div>
                         </div>
 
@@ -65,31 +83,35 @@
                             <div class="mt-4">
                                 <label for="current_password">Mot de passe actuel</label>
                                 <div>
-                                    <input
+                                    <input v-model="form.current_password"
                                         class="bg-[#fffefe] w-full rounded-sm focus:outline-none border border-gray-300"
                                         type="password" name="current_password" id="current_password"
                                         placeholder="Entrer votre mot de pase actuel">
                                 </div>
+                                <Error v-if="form.errors.current_password" :message="form.errors.current_password" />
+                                <Error v-if="form.errors[0]" :message="form.errors[0]" />
                             </div>
 
                             <div class="mt-4">
                                 <label for="password">Nouveau mot de passe</label>
                                 <div>
-                                    <input
+                                    <input v-model="form.password"
                                         class="bg-[#fffefe] w-full rounded-sm focus:outline-none border border-gray-300"
                                         type="password" name="password" id="password"
                                         placeholder="Entrer le nouveau mot de passe">
                                 </div>
+                                <Error v-if="form.errors.password" :message="form.errors.password" />
                             </div>
 
                             <div class="mt-4">
                                 <label for="confirmation_password">Confirmer le nouveau mot de passe</label>
                                 <div>
-                                    <input
+                                    <input v-model="form.password_confirmation"
                                         class="bg-[#fffefe] w-full rounded-sm focus:outline-none border border-gray-300"
                                         type="password" name="confirmation_password" id="confirmation_password"
                                         placeholder="Veuillez confirmer le mot de passe">
                                 </div>
+                                <Error v-if="form.errors.password_confirmation" :message="form.errors.password_confirmation" />
                             </div>
                         </div>
 
@@ -100,8 +122,8 @@
                             <img src="/icons/delete-forever.svg" alt="deletion icon">
                             </Link>
 
-                            <input v-show="useIsUrl('/parametres/edit')" type="submit"
-                                value="Enregistrer les modifications"
+                            <input type="submit" :disabled="isNotUpdated" :class="{ 'grayscale': isNotUpdated }"
+                                v-show="useIsUrl('/parametres/edit')" value="Enregistrer les modifications"
                                 class="bg-blue-400 hover:bg-blue-500 transition-colors font-bold text-white p-2 rounded-md mb-2">
                         </div>
                     </div>
@@ -113,18 +135,64 @@
 </template>
 
 <script setup>
-import { Link, Head, usePage } from '@inertiajs/vue3';
+import { Link, Head, usePage, useForm } from '@inertiajs/vue3';
 import SectionHead from '@/Components/SectionHead.vue';
 import { useIsUrl } from '@/composables/isUrl';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
 import MainLayout from '@/Layouts/MainLayout.vue';
+import { computed, ref } from 'vue';
+import { Upload } from 'lucide-vue-next';
+import Error from '@/Components/forms/Error.vue';
 
-const user = usePage().props.auth.user
-const member = usePage().props.auth.member
+const page = usePage()
+
+const user = page.props.auth.user
+
+const username = ref(user.name)
 
 defineOptions({
-    layout:  MainLayout
+    layout: MainLayout
 })
 
+const updateProfilePicture = (file) => {
+    form.file = file
+    previewFile(file)
+}
+
+const isNotUpdated = computed(() => {
+    return form.username == user.name &&
+        form.current_password == "" &&
+        form.password == "" &&
+        form.password_confirmation == "" &&
+        form.file == ""
+})
+
+const form = useForm({
+    username: username.value,
+    current_password: "",
+    password: "",
+    password_confirmation: "",
+    file: ""
+})
+
+const filePreview = ref("")
+
+const previewFile = (file) => {
+
+    if (!file) {
+        return null
+    }
+
+    const reader = new FileReader()
+
+    reader.readAsDataURL(file)
+
+    reader.onload = () => {
+        filePreview.value = reader.result
+    }
+
+}
+
+const updateProfile = () => form.put('/parametres/edit')
 
 </script>

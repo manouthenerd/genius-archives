@@ -43,7 +43,7 @@ class MemberFormRequest extends FormRequest
             'name'          => ['required', 'string'],
             'email'         => ['required', 'email', 'lowercase', 'string', 'unique:members,email'],
             'password'      => ['required', Password::default()],
-            'disk_space'    => ['required', 'gt:0', "lte:$free_space"],
+            'disk_space'    => ['required', 'gt:0', "lt:$free_space"],
         ];
     }
 

@@ -188,11 +188,12 @@ class ArchiveController extends Controller
             // Le supprimer de la base de données dans le cas contraire
         Storage::disk('public')->exists("temp/$archive->name.$archive->extension") ? $archive->restore() : $archive->forceDelete();
 
+        return redirect()->back();
+
     }
 
     public function delete($id)
     {
-
 
         $archive = Archive::findOrFail($id);
         
@@ -202,7 +203,7 @@ class ArchiveController extends Controller
     public function destroy($id)
     {
 
-        $archive = Archive::findOrFail($id);
+        $archive = Archive::withTrashed()->findOrFail($id);
 
         Storage::disk('public')->delete($archive->file_path) ?? null;
         Storage::disk('public')->delete("temp/$archive->name.$archive->extension");

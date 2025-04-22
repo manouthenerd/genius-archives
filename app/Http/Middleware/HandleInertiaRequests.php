@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\MemberFolder;
+use App\Models\UserFolder;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Illuminate\Support\Facades\DB;
@@ -37,10 +39,10 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user'              => $request->user('web') ? $request->user()->only('name', 'role', 'email') : [],
+                'user'              => $request->user() ? $request->user()->only('name', 'role', 'email') : [],
                 'member'            => $request->user('member') ? $request->user('member')->only('name', 'role', 'email', 'disk_space') : [],
-                'user_folders'      => $user_id ? DB::select('select id, name from user_folders where user_id = ?', [$request->user()->id]) : [],
-                'member_folders'    => $member_id ? DB::select('select id, name from member_folders where member_id = ?', [$request->user('member')->id]) : [],
+                'user_folders'      => $user_id ? UserFolder::withoutTrashed()->where('user_id', '=', $request->user()->id)->get(['id', 'name']) : [],
+                'member_folders'    => $member_id ? MemberFolder::withoutTrashed()->where('member_id', '=', $request->user('member')->id)->get(['id', 'name']) : [],
             ]
         ];
     }

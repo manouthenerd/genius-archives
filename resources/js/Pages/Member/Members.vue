@@ -19,9 +19,6 @@
                     Quota d'espace
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Accès aux dossiers privés
-                </th>
-                <th scope="col" class="px-6 py-3">
                 </th>
             </tr>
         </thead>
@@ -43,9 +40,6 @@
                 <td class="px-6 py-4">
                     {{ member.disk_space }} Go
                 </td>
-                <td class="px-6 py-4">
-                    {{ Boolean(member.can_view_private_folders) ? '✅' : '❌'}}
-                </td>
                 <td class="flex items-center px-6 py-4">
                     <Link 
                         :href="`/mes-membres/${member.id}/edit`" 
@@ -54,7 +48,7 @@
                     </Link>
                     <Link 
                         as="button" 
-                        method="delete" 
+                        method="post" 
                         :href="`/members/${member.id}`" 
                         class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">
                         Supprimer

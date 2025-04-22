@@ -64,11 +64,15 @@
                 />
             </ModalItem>
             <ModalItem>
-                <SubmitButton 
-                    :disabled="! isFilled || form.processing"
-                    value="Enregistrer la clé" 
+               
+                 
+                <Button 
                     :class="{'cursor-not-allowed grayscale pointer-events-none' : ! isFilled}"
-                />
+                    :disabled="! isFilled || form.processing"
+                >
+                    <span v-if="! form.processing">Enregistrer la clé</span>
+                    <Loader class="animate-spin" v-if="form.processing"/>
+                </Button>
 
                 <Link href="/access-keys"
                     class="mt-4 text-xs underline text-blue-500 font-bold hover:no-underline transition-all">
@@ -84,10 +88,10 @@ import { Link, useForm, usePage } from '@inertiajs/vue3';
 import SuperAdminLayout from '@/Layouts/SuperAdminLayout.vue';
 import ModalItem from '@/Components/modals/ModalItem.vue';
 import Input from '@/Components/forms/Input.vue';
-import SubmitButton from '@/Components/forms/SubmitButton.vue';
+import Button from '@/Components/forms/Button.vue';
 import Select from '@/Components/forms/Select.vue';
-import { CheckCheck, Copy } from 'lucide-vue-next';
-import { computed } from 'vue';
+import { CheckCheck, Copy, Loader } from 'lucide-vue-next';
+import { computed, onUnmounted } from 'vue';
 import Error from '@/Components/forms/Error.vue';
 import { useClipboard } from '@/stores/clipboard';
 import { useAlertStore } from '@/stores/alert';
@@ -127,4 +131,6 @@ const submit = () => {
         }
     })
 }
+
+onUnmounted(() => alert.hideAlert())
 </script>

@@ -5,33 +5,32 @@
     <div class="flex h-screen gap-2">
         <aside
             class="h-screen flex justify-between flex-col rounded-sm min-w-[215px] border-none bg-[#1c2434] shadow-lg shadow-black">
-            <div id="brand" class="text-white text-center text-[18px] rounded-sm font-bold uppercase bg-blue-600">
-                <p class="flex items-center gap-1">
-                    <span class="bg-white text-blue-600">GENIUS ARCHIVES</span>
-                    <FolderClosed color="#fff" />
-                </p>
+            <div id="brand" class="text-white text-center text-[18px] rounded-sm font-bold uppercase bg-white">
+                <a href="/" class="flex items-center gap-1">
+                    <img class="h-[100px] w-full object-cover" src="/image/logo-genius.png" alt="App logo">
+                </a>
             </div>
 
             <div>
                 <ul class="flex flex-col gap-4 ml-2">
                     <li>
                         <Link href="/" class="flex gap-2 items-center text-white">
-                        <LayoutGrid color="#2563eb" />
-                        <span :class="useIsComponent('Home') ? styles : ''">Dashboard</span>
+                        <LayoutGrid color="#0074B8" />
+                        <span :class="useIsComponent('Superadmin/Home') ? styles : ''">Dashboard</span>
                         </Link>
                     </li>
 
                     <li>
                         <Link href="/nouvelle-clee" class="flex gap-2 items-center text-white">
-                        <Key color="#2563eb" />
-                        <span>Générer une clé</span>
+                        <Key color="#0074B8" />
+                        <span :class="useIsComponent('Superadmin/CreateAccessKey') ? styles : ''">Générer une clé</span>
                         </Link>
                     </li>
 
                     <li>
                         <Link href="/access-keys" class="flex gap-2 items-center text-white">
-                        <BookKey color="#2563eb" />
-                        <span>Mes clés d'accès</span>
+                        <BookKey color="#0074B8" />
+                        <span :class="useIsComponent('Superadmin/AccessKeys') ? styles : ''">Mes clés d'accès</span>
                         </Link>
                     </li>
                     
@@ -43,14 +42,8 @@
 
                     <li>
                         <Link href="/parametres" class="flex gap-2 items-center text-white">
-                        <Settings color="#2563eb" />
-                        <span :class="useIsComponent('Settings') ? styles : ''">Paramètres</span>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/corbeille" class="flex gap-2 items-center text-white">
-                        <Trash2Icon color="#2563eb" />
-                        <span>Corbeille</span>
+                        <Settings color="#0074B8" />
+                        <span :class="useIsComponent('Superadmin/Settings') ? styles : ''">Paramètres</span>
                         </Link>
                     </li>
                 </ul>
@@ -125,7 +118,6 @@ import {
     LogOut,
     Menu,
     Search,
-    FolderClosed,
     Key,
     BookKey,
 } from 'lucide-vue-next';
@@ -136,7 +128,7 @@ const searchModal = useSearchModalStore()
 
 const date = ref(new Date().getFullYear())
 
-const styles = "text-blue-600 font-bold"
+const styles = "text-[#0074B8] font-bold"
 
 const resize = () => {
     const aside = document.querySelector('aside')
@@ -165,7 +157,7 @@ li button {
 
 a:hover,
 li button:hover {
-    color: #2563eb;
+    color: #0074B8;
 }
 
 .rotate-button {

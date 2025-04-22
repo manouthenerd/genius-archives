@@ -37,7 +37,7 @@
                         {{ folder.name }}
                     </th>
                     <td class="px-6 py-4">
-                        {{ folder.deleted_at}}
+                        {{ dateFormater.dateOnly(folder.deleted_at)}} à {{ dateFormater.timeOnly(folder.deleted_at)}}
                     </td>
                     <td class="px-6 py-4">
                         Moi
@@ -46,7 +46,7 @@
                         <Link 
                             as="button"
                             method="post"
-                            :href="`/folders/${folder.id}/restore`" 
+                            :href="`/folders/${folder.id}`" 
                             class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                         Restaurer
                         </Link>
@@ -124,7 +124,7 @@
                         Restaurer
                         </Link>
 
-                        <Link as="button" method="delete" href="/"
+                        <Link as="button" method="delete" :href="`/members/${member.id}`" 
                             class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">
                         Supprimer définitivement
                         </Link>

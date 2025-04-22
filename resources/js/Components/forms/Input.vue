@@ -2,7 +2,7 @@
     <input :type 
         required
         v-model="model"
-        class="rounded-sm outline-none focus:outline-none border-slate-200">
+        class="rounded-sm border-none outline-none focus:outline-none border-slate-200">
 </template>
 
 <script setup>

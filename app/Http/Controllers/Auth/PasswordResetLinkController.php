@@ -36,7 +36,7 @@ class PasswordResetLinkController extends Controller
         ]);
 
         $member = (bool) Member::where('email', '=', $request->input('email'))->first();
-        $user = (bool) User::where('email', '=', $request->input('email'))->first();
+        $user   = (bool) User::where('email', '=', $request->input('email'))->first();
 
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
@@ -54,13 +54,12 @@ class PasswordResetLinkController extends Controller
                 $request->only('email'));
         }
 
-
         if ($status == Password::RESET_LINK_SENT) {
             return back()->with('status', __($status));
         }
 
         throw ValidationException::withMessages([
-            'email' => [trans($status)],
+            'email' => "Aucun compte associé à cette adresse email",
         ]);
     }
 }

@@ -15,6 +15,7 @@ use App\Models\Archive;
 use App\Models\Member;
 use App\Models\MemberFolder;
 use App\Models\UserFolder;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -66,7 +67,17 @@ class HomeController extends Controller
                     GROUP BY(disk_space)", 
                     [$auth_admin_id]);
 
-                $user_disk_space = $request->user()->access_key->disk_space;
+                    if(! $request->user()->access_key) {
+                        
+                        (new DeleteAllFromUser)->execute($request->user());
+
+                        $request->user()->forceDelete();
+
+                        Auth::logout();
+
+                    }  
+
+                    $user_disk_space = $request->user()->access_key->disk_space;
 
                 $members_history = MembersStatus::get($auth_admin_id);
 
@@ -84,36 +95,6 @@ class HomeController extends Controller
 
            
         }
-
-        // if ($request->user('member')) {
-
-
-        //         $auth_member_id = $request->user('member')->id;
-
-        //         $members_disk_space = DB::select("
-        //         select disk_space * 1024 AS disk_space, COUNT(id) AS total 
-        //         FROM members where user_id = ?
-        //         GROUP BY(disk_space)
-        //     ", [$auth_admin_id]);
-
-        //         $user_disk_space = $request->user()->access_key->disk_space;
-
-        //         $members_history = MembersStatus::get($auth_member_id);
-
-        //         // Récupérer les fichiers associés aux différents dossiers
-        //         if ($folders_id) {
-        //             $files_by_type = DB::select(
-        //                 "SELECT file_type, COUNT(file_type) 
-        //                 AS 'total' FROM `archives` 
-        //                 WHERE `deleted_at` IS NULL
-        //                 AND `member_folder_id` IN($folders_id) 
-        //                 GROUP BY(file_type); "
-        //             );
-        //         }
-
-        // }
-
-
 
         switch ($user->role) {
             case 'superadmin':

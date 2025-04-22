@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('role')->default('administrateur');
             $table->string('password');
+            $table->string('two_factor_code')->default(rand(1000, 9999));
+            $table->timestamp('two_factor_expires_at')->default(now()->addMinutes(15));
             $table->enum('status', ['enable', 'disable'])->default('enable');
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();

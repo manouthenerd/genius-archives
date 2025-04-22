@@ -6,6 +6,7 @@ use App\Models\AccessKey;
 use App\Models\Archive;
 use App\Models\Folder;
 use App\Models\User;
+use App\Models\UserFolder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -19,7 +20,7 @@ class AdminsListController extends Controller
         $admins = $admins->map( function($admin) {
             $members_folders_id = $admin->members()->pluck('id');
 
-            $folders        = Folder::where('owner_id', '=', $admin->id)->pluck('id');
+            $folders        = UserFolder::where('user_id', '=', $admin->id)->pluck('id');
             $archives_size  = Archive::whereIn('folder_id', $folders)->sum('file_size');
             $total_space    = AccessKey::where('user_id', '=', $admin->id)->value('disk_space');
             $members_files_size = Archive::whereIn('folder_id', $members_folders_id);
@@ -33,7 +34,7 @@ class AdminsListController extends Controller
                 'created_at' => $admin->created_at,
                 'members' => $admin->members()->count(),
                 'archives' => Archive::whereIn('folder_id', $folders)->count(),
-                'folders' => Folder::where('owner_id', '=', $admin->id)->count(),
+                'folders' => UserFolder::where('user_id', '=', $admin->id)->count(),
             ];
         });
 

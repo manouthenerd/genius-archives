@@ -58,6 +58,7 @@ import { useFoldersModalStore } from '@/stores/foldersModal';
 import Button from '../forms/Button.vue';
 import { Loader } from 'lucide-vue-next';
 import Error from '../forms/Error.vue';
+import { useAlertStore } from '@/stores/alert';
 
 // Initialisation du formulaire avec des valeurs par défaut
 const folderForm = useForm({
@@ -66,6 +67,7 @@ const folderForm = useForm({
     visibility: "public",
 })
 
+const alert = useAlertStore()
 
 // Contenu des notes explicatives pour les niveaux d'accès
 const noteContent = reactive({
@@ -82,7 +84,11 @@ const foldersModalStore = useFoldersModalStore()
 
 const submit = () => {
     folderForm.post('/folders', {
-        onSuccess: () => folderForm.reset('name')
+        onSuccess: () => {
+            folderForm.reset('name')
+            alert.setMessage('Dossier créé avec succès !🎉')
+            alert.showAlert()
+        }
     })
 }
 </script>

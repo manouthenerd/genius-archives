@@ -18,12 +18,12 @@ export const useAlertStore = defineStore('alert', () => {
 
         intervalId.value = setInterval(() => {
 
-            timer.value = timer.value - 10
+            timer.value = timer.value - 1
 
             if(timer.value == 0) { 
                 hideAlert()
             }
-        }, 1);
+        }, 100);
     }
 
     const hideAlert = () => {

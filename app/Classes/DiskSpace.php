@@ -2,33 +2,37 @@
 
 namespace App\Classes;
 
+use App\Models\Archive;
 use App\Models\Member;
+use App\Models\MemberFolder;
 use App\Models\User;
+use App\Models\UserFolder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class DiskSpace
 {
 
-    public function admin_members_disk_space($admin_id)
-    {   
-        // Calculer le total des fichiers uploadés par l'admin
-        // Calculer le total des fichiers des membres de l'admin
+    public function user_free_disk_space($id)
+    {
+        // Récupérer l'admin associé à la clé
+        $admin = User::find($id, ['id', 'name', 'email']);
 
-        $user_members_disk_space = Member::where('user_id', '=', $admin_id)->sum('disk_space');
+        // Récupérer les dossiers de l'admin
+        $admin_folders_id = UserFolder::where('user_id', '=', $admin->id)->get(['id']);
 
-        $members = User::find($admin_id, ['id', 'name'])
-            ->members()
-            ->get(['id', 'name'])
-            ->toArray();
+        // Récupérer la taille totale des fichiers uploadés par l'admin
+        $admin_archives_size = Archive::whereIn('user_folder_id', $admin_folders_id)->get(['id', 'name', 'file_size'])->sum('file_size');
 
-        // $folders = $members->map( function($member) {
-        //     return Folder::where('owner_id', '=', $member->id)->get(['id', 'name']);
-        // });
+        // Récupérer les membres créés par l'admin
+        $members = Member::where('user_id', '=', $admin->id)->get(['id', 'name']);
 
-        $members_id = Arr::map($members, function($member) {
-            return $member['id'];
-        });
+        // Récupérer les dossiers de l'admin
+        $member_folders_id = MemberFolder::whereIn('member_id', $members->pluck('id'))->get(['id']);
 
-    }   
+        // Récupérer la taille totale des fichiers uploadés par l'admin
+        $member_archives_size = Archive::whereIn('member_folder_id', $member_folders_id)->get(['id', 'name', 'file_size'])->sum('file_size');
+
+        return $admin_archives_size + $member_archives_size;
+    }
 }

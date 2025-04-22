@@ -60,7 +60,7 @@
                     <Loader class="animate-spin" v-if="form.processing"/>
                 </Button>
 
-                <Link href="/mes-cles"
+                <Link href="/access-keys"
                     class="mt-4 text-xs underline text-blue-500 font-bold hover:no-underline transition-all">
                 Voir la liste des clés générées
                 </Link>
@@ -70,12 +70,11 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onUnmounted } from 'vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 import SuperAdminLayout from '@/Layouts/SuperAdminLayout.vue';
 import ModalItem from '@/Components/modals/ModalItem.vue';
 import Input from '@/Components/forms/Input.vue';
-import SubmitButton from '@/Components/forms/SubmitButton.vue';
 import Select from '@/Components/forms/Select.vue';
 import Error from '@/Components/forms/Error.vue'; 
 import { useAlertStore } from '@/stores/alert';
@@ -110,7 +109,10 @@ const submit = () => {
         onSuccess: () => {
             alert.setMessage('Modification effectuée avec succès ! 🎉')
             alert.showAlert()
+            console.log('Hello')
         }
     })
 }
+
+onUnmounted(() => alert.hideAlert())
 </script>

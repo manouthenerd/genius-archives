@@ -6,11 +6,15 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\SessionController;
+use App\Http\Controllers\TwoFactorVerification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Member;
 use App\Models\MemberSession;
+use App\Models\User;
 use App\Models\UserSessions;
 
 class AuthenticatedSessionController extends Controller
@@ -20,8 +24,6 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): Response
     {
-
-        // (new DiskSpace)->admin_members_disk_space(2);
 
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
@@ -51,6 +53,19 @@ class AuthenticatedSessionController extends Controller
 
             $request->session()->regenerate();
 
+            $user = $request->user();
+
+
+            $user_last_session = SessionController::get_user_last_session($user);
+
+            if (! $user_last_session === now()->toDateString()) {
+
+                TwoFactorVerification::generateTwoFactorCode($user);
+
+                return redirect()->route('2fa.index');
+            }
+
+
             return redirect()->intended(route('dashboard', absolute: false));
         }
 
@@ -65,6 +80,16 @@ class AuthenticatedSessionController extends Controller
             ]);
 
             $request->session()->put('member_session_id', $session->id);
+
+            $member = $request->user('member');
+
+            $member_last_session = SessionController::get_member_last_session($member);
+
+            if (! $member_last_session === now()->toDateString()) {
+                TwoFactorVerification::generateTwoFactorCode($member);
+
+                return redirect()->route('2fa.index');
+            }
 
             $request->session()->regenerate();
 
@@ -90,7 +115,13 @@ class AuthenticatedSessionController extends Controller
 
             $user_session->save();
 
+            $member = $request->user('member');
+
             Auth::guard('member')->logout();
+
+            if ($member->status == 'disable') {
+                Member::find($member->id)->forceDelete();
+            }
         }
 
         if ($request->user()) {
@@ -98,7 +129,7 @@ class AuthenticatedSessionController extends Controller
             $session_id = $request->session()->get('user_session_id');
 
             if ($session_id) {
-                
+
                 $user_session = UserSessions::find($session_id);
 
                 $user_session->logout_at = now()->format('Y-m-d h:i');
@@ -107,7 +138,13 @@ class AuthenticatedSessionController extends Controller
                 $user_session->save();
             }
 
+            $user = $request->user();
+
             Auth::logout();
+
+            if ($user->status == 'disable') {
+                User::find($user->id)->forceDelete();
+            }
         }
 
         $request->session()->invalidate();
