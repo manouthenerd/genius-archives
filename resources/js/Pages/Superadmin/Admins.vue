@@ -62,7 +62,7 @@
                             {{ dateFormat.dateOnly(admin.created_at) }} à {{ dateFormat.timeOnly(admin.created_at) }}
                         </td>
                         <td class="px-6 py-4">
-                            <Link as="button" method="delete" :href="`admins/${admin.id}`"
+                            <Link as="button" method="delete" :href="`/admins/${admin.id}`"
                                 class="p-2 rounded-sm text-center text-white bg-red-600 hover:opacity-100">
                             supprimer
                             </Link>

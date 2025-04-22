@@ -43,7 +43,7 @@
         </form>
     </div>
 
-    <div class="max-w-[300px] h-full bg-[url(/image/background.svg)] bg-cover">
+    <div class="max-w-[300px] h-full bg-[url(/image/background.svg)] bg-cover max-[620px]:hidden">
 
         <div id="skew-box"
             class="h-full w-[262px] flex flex-col justify-around border border-solid border-slate-200 text-white font-bold p-2 rounded-sm space-y-4">

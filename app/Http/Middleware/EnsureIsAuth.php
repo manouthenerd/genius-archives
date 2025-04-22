@@ -3,8 +3,10 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\DeleteAllFromUser;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureIsAuth
@@ -23,21 +25,30 @@ class EnsureIsAuth
                 Auth::guard('member')->logout();
                 header("Location: /");
                 return redirect('/connexion');
+
             } else {
 
                 return $next($request);
             } 
 
-            if($request->user() && $request->user()->status !== 'enable') {
-                Auth::logout();
-                header("Location: /");
-                return redirect('/connexion');
-            }else {
-
-                return $next($request);
-            } 
             
         }
+
+        if(($request->user()) && ($request->user()->status == 'disable')) {
+
+            $user = User::find($request->user()->id);
+
+            Auth::logout();
+
+            (new DeleteAllFromUser)->execute($user);
+
+            header("Location: /");
+            return redirect('/connexion');
+
+        }else {
+
+            return $next($request);
+        } 
 
         return redirect('/connexion');
         

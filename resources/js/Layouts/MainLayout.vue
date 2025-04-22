@@ -1,33 +1,36 @@
 <template>
+
     <Head title="L'archive du futur" />
-    <Alert/>
-    <ConfirmationModal :message="message"/>
-    
+    <Alert />
+    <ConfirmationModal :message="message" />
+
     <div class="flex h-screen gap-2">
         <aside
-            class="h-screen overflow-auto flex justify-between flex-col rounded-sm min-w-[215px] border-none bg-[#1c2434] shadow-lg shadow-black">
+            :class="resize.navbarIsResized ? 'w-[100px]' : 'min-w-[215px]'"
+            class="h-screen overflow-auto flex justify-between flex-col rounded-sm border-none bg-[#1c2434] shadow-lg shadow-black">
             <div id="brand" class="text-white text-center text-[18px] rounded-sm font-bold uppercase bg-white">
                 <a href="/" class="flex items-center gap-1">
                     <img class="h-[100px] w-full object-cover" src="/image/logo-genius.png" alt="App logo">
                 </a>
             </div>
 
-            <div>
+            <div :class="{'ml-2' : resize.navbarIsResized}">
                 <ul class="flex flex-col gap-4 ml-2">
                     <li>
                         <Link href="/" class="flex gap-2 items-center text-white">
                         <LayoutGrid color="#0074B8" />
-                        <span :class="useIsComponent('Home') ? styles : ''">Dashboard</span>
+                        <span v-if="! resize.navbarIsResized" :class="useIsComponent('Home') ? styles : ''">Dashboard</span>
                         </Link>
                     </li>
                     <li class="flex flex-col">
 
-                        <details>
+                        <details :open="resize.navbarIsResized">
 
                             <summary class="flex gap-2 items-center text-white"
                                 :class="useIsComponent('Archives') ? styles : ''">
                                 <FolderArchive color="#0074B8" />
-                                Mes Dossiers
+                               
+                                <span v-if="! resize.navbarIsResized">Mes Dossiers</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960"
                                     width="30px" fill="#fff">
                                     <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
@@ -37,9 +40,10 @@
                             <ul class="flex flex-col items-center gap-2 text-white">
                                 <li v-if="user">
                                     <ul class="text-[14px] text-slate-300">
-                                        <li v-for="folder in user_folders" :title="folder.name">
-                                            <Link :href="'/folders/' + folder.id" class=" overflow-hidden whitespace-nowrap inline-block text-ellipsis w-[145px]">
-                                                {{ folder.name }}
+                                        <li :class="resize.isResized ? 'ml-[85px]' : ''" v-for="folder in user_folders" :title="folder.name">
+                                            <Link :href="'/folders/' + folder.id"
+                                                class=" overflow-hidden whitespace-nowrap inline-block text-ellipsis w-[145px]">
+                                            {{ folder.name }}
                                             </Link>
                                         </li>
                                     </ul>
@@ -48,8 +52,9 @@
                                 <li v-if="member">
                                     <ul class="text-[14px] text-slate-300">
                                         <li v-for="folder in member_folders" :title="folder.name">
-                                            <Link :href="'/folders/' + folder.id" class=" overflow-hidden whitespace-nowrap inline-block text-ellipsis w-[145px]">
-                                                {{ folder.name }}
+                                            <Link :href="'/folders/' + folder.id"
+                                                class=" overflow-hidden whitespace-nowrap inline-block text-ellipsis w-[145px]">
+                                            {{ folder.name }}
                                             </Link>
                                         </li>
                                     </ul>
@@ -57,8 +62,9 @@
                                 <li>
                                     <button type="button" @click.prevent="foldersModalStore.openModal()"
                                         class="flex items-center">
-                                        <FolderPlus size="20" class="text-slate-300" />
-                                        Nouveau dossier
+                                        <FolderPlus size="20" class="text-slate-300" :class="{' self-start mr-[34px]' : resize.navbarIsResized}" />
+                                        
+                                        <span v-if="! resize.navbarIsResized">Nouveau dossier</span>
                                     </button>
 
                                 </li>
@@ -71,54 +77,54 @@
                     <li>
                         <Link href="/nouvelle-archive" class="flex gap-2 items-center text-white">
                         <FileText color="#0074B8" />
-                        <span :class="useIsComponent('CreateArchive') ? styles : ''">Nouvelle archive</span>
+                        <span v-if="! resize.navbarIsResized" :class="useIsComponent('CreateArchive') ? styles : ''">Nouvelle archive</span>
                         </Link>
                     </li>
 
                     <li v-show="isAdmin">
                         <button @click="createMemberModal.openModal()" class="flex gap-2 items-center text-white">
                             <UserRoundPlus color="#0074B8" />
-                            <span>Ajouter un membre </span>
+                            <span v-if="! resize.navbarIsResized">Ajouter un membre </span>
                         </button>
                     </li>
                     <li v-show="isAdmin">
                         <Link href="/mes-membres" class="flex gap-2 items-center text-white">
                         <UsersRound color="#0074B8" />
-                        <span>Mes membres</span>
+                        <span v-if="! resize.navbarIsResized">Mes membres</span>
                         </Link>
                     </li>
                 </ul>
             </div>
 
-            <div>
+            <div :class="{'ml-2' : resize.navbarIsResized}">
                 <ul class="flex flex-col gap-2 ml-2">
                     <li v-show="isAdmin">
                         <Link href="/historique" class="flex gap-2 items-center text-white">
                         <History color="#0074B8" />
-                        <span :class="useIsComponent('Historique') ? styles : ''">Historique</span>
+                        <span v-if="! resize.navbarIsResized" :class="useIsComponent('Historique') ? styles : ''">Historique</span>
                         </Link>
                     </li>
                     <li>
                         <Link href="/parametres" class="flex gap-2 items-center text-white">
                         <Settings color="#0074B8" />
-                        <span :class="useIsComponent('Settings') ? styles : ''">Paramètres</span>
+                        <span v-if="! resize.navbarIsResized" :class="useIsComponent('Settings') ? styles : ''">Paramètres</span>
                         </Link>
                     </li>
                     <li v-show="isAdmin">
                         <Link href="/corbeille" class="flex gap-2 items-center text-white">
                         <Trash2Icon color="#0074B8" />
-                        <span>Corbeille</span>
+                        <span v-if="! resize.navbarIsResized">Corbeille</span>
                         </Link>
                     </li>
                 </ul>
             </div>
 
-            <div class="mb-4">
+            <div class="mb-4" :class="{'ml-2' : resize.navbarIsResized}">
                 <ul class="flex flex-col gap-2 ml-2">
                     <li>
                         <Link href="/logout" as="button" method="post" class="flex gap-2 items-center text-white">
                         <LogOut color="#dc2626 " />
-                        <span class="text-red-600">Se déconnecter</span>
+                        <span v-if="! resize.navbarIsResized" class="text-red-600">Se déconnecter</span>
                         </Link>
                     </li>
 
@@ -131,14 +137,15 @@
             </div>
         </aside>
 
-        <div class="px-4 h-screen overflow-scroll rounded-sm w-full size-[50%] bg-gradient-to-r from-slate-100 to-orange-50 via-blue-100 shadow-lg shadow-black">
+        <div
+            class="px-4 h-screen overflow-scroll rounded-sm w-full size-[50%] bg-gradient-to-r from-slate-100 to-orange-50 via-blue-100 shadow-lg shadow-black">
             <header class="sticky top-0 z-999">
                 <div class="flex flex-wrap-reverse gap-4 justify-between items-center bg-white p-2">
                     <div class="flex gap-2 items-center">
-                        <button @click="resize">
+                        <button @click="resize.resizeNavbar()">
                             <Menu size="35px" />
                         </button>
-                        <div class="ml-4 bg-gray-200 border-none ring-2 ring-slate-300 shadow-inner rounded-md">
+                        <div v-show="false" class="ml-4 bg-gray-200 border-none ring-2 ring-slate-300 shadow-inner rounded-md">
                             <button type="submit" class="h-[40px] text-[14px] w-full flex items-center"
                                 @click="searchModal.openModal()">
                                 RECHERCHE
@@ -189,6 +196,7 @@ import { useCreateMemberModalStore } from '@/stores/createMemberModal';
 import Alert from '@/Components/Alert.vue';
 import ConfirmationModal from '@/Components/modals/ConfirmationModal.vue';
 import { useAlertStore } from '@/stores/alert';
+import { useResizeStore } from '@/stores/resize';
 
 import {
     LayoutGrid,
@@ -219,11 +227,7 @@ const date = ref(new Date().getFullYear())
 
 const styles = "text-[#0074B8] font-bold"
 
-const resize = () => {
-    const aside = document.querySelector('aside')
-
-    aside.classList.toggle('w-[300px]')
-}
+const resize = useResizeStore()
 
 const alert = useAlertStore();
 
@@ -234,7 +238,6 @@ const isAdmin = computed(() => {
 const message = "Voulez-vous vraiment supprimer ce dossier ainsi que tout le contenu ?"
 
 onUnmounted(() => alert.hideAlert())
-
 
 
 </script>
@@ -254,10 +257,11 @@ a:hover,
 li button:hover {
     color: #0074B8;
 }
+
 élément {
-  white-space: nowrap;
-  overflow: hidden;
-  display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
 }
 
 .rotate-button {

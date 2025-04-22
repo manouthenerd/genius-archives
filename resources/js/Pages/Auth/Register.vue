@@ -4,7 +4,7 @@
         <Head title="Connexion" />
         <div class="max-w-[315px] h-full bg-[url(/image/background.svg)] bg-cover">
             <form @submit.prevent="submit()"
-                class="flex min-w-[295px] flex-col h-full justify-around border border-solid border-slate-200 p-2 rounded-sm space-y-4">
+                class="flex min-w-[295px] flex-col h-full justify-around border border-solid border-slate-200 p-2 rounded-sm space-y-4 min-[620px]:skew-y-[-13deg] max-[620px]:skew-y-0">
                 <p
                     class="text-center text-white border-b-transparent bg-black p-0.5 rounded border border-solid border-[aliceblue]">
                     Page d'inscription
@@ -54,7 +54,7 @@
             </form>
         </div>
 
-        <div class="max-w-[300px] h-full bg-[url(/image/background.svg)] bg-cover">
+        <div id="test" class="max-w-[300px] h-full bg-[url(/image/background.svg)] bg-cover">
 
             <div id="skew-box"
                 class="h-full w-[262px] flex flex-col justify-around border border-solid border-slate-200 text-white font-bold p-2 rounded-sm space-y-4">
@@ -113,7 +113,7 @@ form,
 
 form {
     align-content: center;
-    transform: skewY(-13deg);
+    /* transform: skewY(-13deg); */
     border-top-right-radius: 20px;
 }
 
@@ -132,5 +132,11 @@ form {
     border-left: transparent;
     transform: skewY(0);
     border-top-left-radius: 0;
+}
+
+@media screen and (max-width: 625px) {
+    #test {
+        display: none !important;
+    }
 }
 </style>

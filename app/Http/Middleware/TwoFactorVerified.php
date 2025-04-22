@@ -41,6 +41,7 @@ class TwoFactorVerified
             $current_date = now()->toDateString();
 
             $member_last_session = SessionController::get_member_last_session($member);
+            
             if ($member_last_session) {
                 if ($member_last_session !== $current_date) {
                     TwoFactorVerification::generateTwoFactorCode($member);

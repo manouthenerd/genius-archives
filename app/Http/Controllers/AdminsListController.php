@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AccessKey;
-use App\Models\Archive;
-use App\Models\Folder;
 use App\Models\User;
+use Inertia\Inertia;
+use App\Models\Folder;
+use App\Models\Archive;
+use App\Models\AccessKey;
 use App\Models\UserFolder;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class AdminsListController extends Controller
 {
@@ -39,5 +40,17 @@ class AdminsListController extends Controller
         });
 
         return Inertia::render('Superadmin/Admins', ['admins' => $admins]);
+    }
+
+    public function destroy($id)
+    {
+        $user = User::find($id);
+
+        $user->status = "disable";
+        
+        $user->save();
+
+        return redirect()->back();
+
     }
 }

@@ -11,15 +11,14 @@ use App\Http\Middleware\IsMemberOrAdmin;
 use App\Http\Controllers\TrashController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\MemberController;
-use App\Http\Middleware\TwoFactorVerified;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Middleware\IsSuperAdminOrAdmin;
 use App\Http\Controllers\TwoFactorController;
 use App\Http\Controllers\AccessKeysController;
 use App\Http\Controllers\AdminsListController;
 use App\Http\Controllers\MembersListController;
+use App\Http\Middleware\TwoFactorVerified;
 
 //Auth + email vérifié
 Route::middleware([EnsureIsAuth::class, VerifiedEmail::class, TwoFactorVerified::class])->group(function () {
@@ -80,6 +79,7 @@ Route::middleware([EnsureIsAuth::class, VerifiedEmail::class, IsSuperAdmin::clas
     Route::get('/nouvelle-clee', [AccessKeysController::class, 'create'])->name('access-keys.create');
     Route::post('/nouvelle-clee', [AccessKeysController::class, 'store'])->name('access-keys.create');
     Route::get('/admins', [AdminsListController::class, 'index'])->name('admins');
+    Route::delete('/admins/{id}', [AdminsListController::class, 'destroy']);
     Route::get('/members', [MembersListController::class, 'index'])->name('members');
 })->name('superadmin');
 

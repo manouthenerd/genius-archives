@@ -109,11 +109,6 @@
                                 {{admin ? admin.access_key : ''}}
                             </Link>
                         </td>
-                        <td v-if="admin.name" class="px-6 py-4">
-                            <Link class="p-2 rounded-sm text-center text-white bg-red-600 hover:opacity-100">
-                                supprimer
-                            </Link>
-                        </td>
                     </tr>
                     
                 </tbody>
@@ -166,15 +161,8 @@
                             {{member ? member.role : ''}}
                         </td>
                         <td class="px-6 py-4">
-                                {{member ? member.admin : ''}}
-                        </td>
-
-                        <td v-show="member.name" class="px-6 py-4">
-                            <Link class="p-2 rounded-sm text-center text-white bg-red-600 hover:opacity-100">
-                                supprimer
-                            </Link>
-                        </td>
-                        
+                                {{member ? member.name : ''}}
+                        </td>                        
                     </tr>
                     
                 </tbody>
