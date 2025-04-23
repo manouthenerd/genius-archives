@@ -26,11 +26,9 @@ class TwoFactorVerified
 
             $user_last_session = SessionController::get_user_last_session($user);
 
-            if ($user_last_session) {
-                if ($user_last_session !== $current_date) {
-                    TwoFactorVerification::generateTwoFactorCode($user);
-                    return redirect()->route('2fa.index');
-                }
+            if (($user_last_session !== $current_date) || $user_last_session == null) {
+                TwoFactorVerification::generateTwoFactorCode($user);
+                return redirect()->route('2fa.index');
             }
         }
 
@@ -41,13 +39,12 @@ class TwoFactorVerified
             $current_date = now()->toDateString();
 
             $member_last_session = SessionController::get_member_last_session($member);
-            
-            if ($member_last_session) {
-                if ($member_last_session !== $current_date) {
-                    TwoFactorVerification::generateTwoFactorCode($member);
-                    return redirect()->route('2fa.index');
-                }
+
+            if (($member_last_session !== $current_date) || $member_last_session == null) {
+                TwoFactorVerification::generateTwoFactorCode($member);
+                return redirect()->route('2fa.index');
             }
+
         }
 
         return $next($request);

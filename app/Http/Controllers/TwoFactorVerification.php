@@ -28,10 +28,9 @@ class TwoFactorVerification extends Controller
      */
     public static function resetTwoFactorCode(User|Member $user)
     {
-        $user->two_factor_code = rand(1000, 9999);
-        $user->two_factor_expires_at = now();
-        $user->save();
 
-        return redirect()->intended();
+        $user->two_factor_code = rand(1000, 9999);
+        $user->two_factor_expires_at = now()->next("01:30");
+        $user->save();
     }
 }

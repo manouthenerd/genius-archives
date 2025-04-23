@@ -1,7 +1,7 @@
 <template>
 
     <Head title="L'archive du futur" />
-    <Alert/>
+    <Alert />
     <div class="flex h-screen gap-2">
         <aside
             class="h-screen flex justify-between flex-col rounded-sm min-w-[215px] border-none bg-[#1c2434] shadow-lg shadow-black">
@@ -33,7 +33,7 @@
                         <span :class="useIsComponent('Superadmin/AccessKeys') ? styles : ''">Mes clés d'accès</span>
                         </Link>
                     </li>
-                    
+
                 </ul>
             </div>
 
@@ -69,32 +69,32 @@
 
         <div class="px-4 h-screen overflow-scroll rounded-sm w-full size-[50%] bg-[whitesmoke] shadow-lg shadow-black">
             <header class="sticky top-0 z-999">
-                <div class="flex flex-wrap-reverse gap-4 justify-between items-center bg-white p-2">
-                    <div class="flex gap-2 items-center">
-                        <button @click="resize">
-                            <Menu size="35px" />
-                        </button>
-                        <div class="ml-4 bg-gray-200 border-none ring-2 ring-slate-300 shadow-inner rounded-md">
-                            <button type="submit" class="h-[40px] text-[14px] w-full flex items-center"
-                                @click="searchModal.openModal()">
-                                RECHERCHE
-                                <Search size="14" color="#5f6368" />
+
+                    <div id="wrapper" class="flex flex-wrap-reverse gap-4 justify-between items-center bg-white p-2">
+                        <div class="flex gap-2 items-center">
+                            <button id="navbar-button" @click="toggleNavbarPosition()">
+                                <Menu size="35px" />
                             </button>
+                            <div v-show="false"
+                                class="ml-4 bg-gray-200 border-none ring-2 ring-slate-300 shadow-inner rounded-md">
+                                <button type="submit" class="h-[40px] text-[14px] w-full flex items-center"
+                                    @click="searchModal.openModal()">
+                                    RECHERCHE
+                                    <Search size="14" color="#5f6368" />
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <div class="flex gap-4 items-center">
+
+                            <ProfilePicture :name="user.name" />
+                            <ul>
+                                <li>{{ user.name }}</li>
+                                <li class="text-lightGray">{{ user.role }}</li>
+                            </ul>
                         </div>
                     </div>
-
-
-                    <div class="flex gap-4 items-center">
-
-                        <input @click="rotate" id="theme-button" type="image" src="/icons/light.svg" />
-
-                        <ProfilePicture :name="user.name" />
-                        <ul>
-                            <li>{{ user.name }}</li>
-                            <li class="text-lightGray">{{ user.role }}</li>
-                        </ul>
-                    </div>
-                </div>
             </header>
 
             <main class="bg-white mt-5">
@@ -114,7 +114,6 @@ import Alert from '@/Components/Alert.vue';
 import {
     LayoutGrid,
     Settings,
-    Trash2Icon,
     LogOut,
     Menu,
     Search,
@@ -130,17 +129,13 @@ const date = ref(new Date().getFullYear())
 
 const styles = "text-[#0074B8] font-bold"
 
-const resize = () => {
+const toggleNavbarPosition = () => {
     const aside = document.querySelector('aside')
 
-    aside.classList.toggle('w-[300px]')
+    aside.classList.toggle('toggle')
+
 }
 
-const rotate = () => {
-    const aside = document.querySelector('#theme-button')
-
-    aside.classList.toggle('rotate-button')
-}
 
 </script>
 
@@ -174,5 +169,35 @@ li button:hover {
 .v-enter-from,
 .v-leave-to {
     opacity: 0;
+}
+
+.toggle {
+    left: 0;
+}
+
+
+@media screen and (max-width: 520px) {
+
+    aside {
+        transition: all .5s ease;
+        z-index: 999;
+        position: fixed;
+        left: -230px;
+    }
+
+}
+
+@media screen and (min-width: 520px) {
+
+    #navbar-button {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 600px) {
+
+    #wrapper {
+        flex-direction: row-reverse;
+    }
 }
 </style>

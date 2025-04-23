@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MemberSession;
+use App\Models\UserSessions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -24,9 +26,8 @@ class TwoFactorController extends Controller
             'digit4' => ['required', 'integer'],
         ]);
 
-
         if (Auth::user()) {
-            
+
             $user = Auth::user();
 
             if ($request->input('two_factor_code') !== $user->two_factor_code) {
@@ -38,6 +39,16 @@ class TwoFactorController extends Controller
             }
 
             TwoFactorVerification::resetTwoFactorCode($user);
+
+            UserSessions::create([
+                'user_id' => $request->user()->id,
+                'ip_address' => $request->ip(),
+                'status'    => 'online',
+                'login_at'  => now()->format('Y-m-d h:i'),
+                'logout_at' => null
+            ]);
+
+            return redirect()->route('dashboard');
         }
 
         if (Auth::guard('member')->user()) {
@@ -53,15 +64,26 @@ class TwoFactorController extends Controller
             }
 
             TwoFactorVerification::resetTwoFactorCode($member);
+
+            MemberSession::create([
+                'member_id' => $request->user('member')->id,
+                'ip_address' => $request->ip(),
+                'status'    => 'online',
+                'login_at'  => now()->format('Y-m-d h:i'),
+                'logout_at' => null
+            ]);
+
+            return redirect()->route('dashboard');
         }
 
 
-        return redirect()->route('dashboard');
+        return redirect()->route('login');
     }
 
 
     public function generate(Request $request)
     {
+
         // Vérifie si l'utilisateur est authentifié
         if ($request->user()) {
             $user = $request->user();
@@ -70,7 +92,8 @@ class TwoFactorController extends Controller
             TwoFactorVerification::generateTwoFactorCode($user);
 
             // Retourne une réponse JSON avec un message de succès
-            return redirect()->intended();        }
+            return redirect()->intended();
+        }
 
         // Vérifie si un membre est authentifié via le guard 'member'
         if ($request->user('member')) {
@@ -84,6 +107,6 @@ class TwoFactorController extends Controller
         }
 
         // Retourne une réponse d'erreur si aucun utilisateur ou membre n'est authentifié
-        return redirect()->back()->with('error', 'Utilisateur non authentifié.');
+        return redirect()->back()->withErrors(['error', 'Utilisateur non authentifié.']);
     }
 }

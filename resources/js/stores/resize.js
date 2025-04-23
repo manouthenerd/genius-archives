@@ -3,7 +3,7 @@ import { computed, ref } from "vue";
 
 export const useResizeStore = defineStore('resize', () => {
 
-    const isResized = ref(true)
+    const isResized = ref(false)
 
     const navbarIsResized = computed(() => isResized.value)
 

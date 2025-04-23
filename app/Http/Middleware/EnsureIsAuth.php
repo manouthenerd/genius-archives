@@ -19,36 +19,31 @@ class EnsureIsAuth
     public function handle(Request $request, Closure $next): Response
     {
 
-        if(Auth::guard('member')->check() || Auth::check()) {
+        if (Auth::guard('member')->check()) {
 
-            if($request->user('member') && $request->user('member')->status !== 'enable') {
+            if ($request->user('member')->status !== 'enable') {
                 Auth::guard('member')->logout();
-                header("Location: /");
                 return redirect('/connexion');
-
-            } else {
-
-                return $next($request);
-            } 
-
-            
-        }
-
-        if(($request->user()) && ($request->user()->status == 'disable')) {
-
-            $user = User::find($request->user()->id);
-
-            Auth::logout();
-
-            (new DeleteAllFromUser)->execute($user);
-
-            header("Location: /");
-            return redirect('/connexion');
-
-        }else {
+            }
 
             return $next($request);
-        } 
+        }
+
+        if (Auth::check()) {
+
+            if ($request->user()->status == 'disable') {
+
+                $user = User::find($request->user()->id);
+
+                Auth::logout();
+
+                (new DeleteAllFromUser)->execute($user);
+
+                return redirect('/connexion');
+            }
+
+            return $next($request);
+        }
 
         return redirect('/connexion');
         

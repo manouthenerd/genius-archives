@@ -30,7 +30,7 @@ Route::middleware([EnsureIsAuth::class, VerifiedEmail::class, TwoFactorVerified:
 
 Route::middleware([EnsureIsAuth::class, VerifiedEmail::class])->group(function () {
     Route::get('2fa', [TwoFactorController::class, 'index'])->name('2fa.index');
-    Route::put('2fa', [TwoFactorController::class, 'generate'])->name('2fa.generate');
+    // Route::put('2fa', [TwoFactorController::class, 'generate'])->name('2fa.generate');
     Route::post('2fa', [TwoFactorController::class, 'store'])->name('2fa.store');
 });
 

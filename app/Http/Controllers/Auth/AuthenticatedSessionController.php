@@ -106,14 +106,14 @@ class AuthenticatedSessionController extends Controller
     {
         if ($request->user('member')) {
 
-            $session_id = $request->session()->get('member_session_id');
+            $member = $request->user('member');
 
-            $user_session = MemberSession::find($session_id);
+            $member_session = MemberSession::where('member_id', '=', $member->id)->get(['*'])->last();
 
-            $user_session->logout_at = now()->format('Y-m-d h:i');
-            $user_session->status = 'offline';
+            $member_session->logout_at = now()->format('Y-m-d h:i');
+            $member_session->status = 'offline';
 
-            $user_session->save();
+            $member_session->save();
 
             $member = $request->user('member');
 
@@ -126,19 +126,17 @@ class AuthenticatedSessionController extends Controller
 
         if ($request->user()) {
 
-            $session_id = $request->session()->get('user_session_id');
+            $user = $request->user();
 
-            if ($session_id) {
+            $user_session = UserSessions::where('user_id', '=', $request->user()->id)->get(['*'])->last();
 
-                $user_session = UserSessions::find($session_id);
+            if ($user_session) {
 
-                $user_session->logout_at = now()->format('Y-m-d h:i');
+                $user_session->logout_at = now();
                 $user_session->status = 'offline';
 
                 $user_session->save();
             }
-
-            $user = $request->user();
 
             Auth::logout();
 

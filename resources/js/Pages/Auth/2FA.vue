@@ -16,28 +16,32 @@
             <form @submit.prevent="submit">
                 <ModalItem class="space-y-2">
                     <label for="code" class="text-white">Entrer le code</label>
-                    <div class="flex gap-2">
-                        <Input id="digit1" v-model="form.digit1" maxlength="1" class="text-slate-600 font-bold text-center" />
-                        <Input id="digit2" v-model="form.digit2" maxlength="1" class="text-slate-600 font-bold text-center" />
-                        <Input id="digit3" v-model="form.digit3" maxlength="1" class="text-slate-600 font-bold text-center" />
-                        <Input id="digit4" v-model="form.digit4" maxlength="1" class="text-slate-600 font-bold text-center" />
+                    <div class="flex flex-wrap gap-2">
+                        <Input id="digit1" v-model="form.digit1" maxlength="1"
+                            class="text-black placeholder:text-gray-300 font-bold text-center" placeholder="1" />
+                        <Input id="digit2" v-model="form.digit2" maxlength="1"
+                            class="text-black placeholder:text-gray-300 font-bold text-center" placeholder="2" />
+                        <Input id="digit3" v-model="form.digit3" maxlength="1"
+                            class="text-black placeholder:text-gray-300 font-bold text-center" placeholder="3" />
+                        <Input id="digit4" v-model="form.digit4" maxlength="1"
+                            class="text-black placeholder:text-gray-300 font-bold text-center" placeholder="4" />
                     </div>
-                        <Button class="w-1/4">
-                            <span v-if="! form.processing">Valider</span>
-                            <Loader v-if="form.processing" class="animate-spin"/>
-                        </Button>
+                    <Error :message="form.errors.two_factor_code" />
+                    <Button class="w-1/4">
+                        <span v-if="!form.processing">Valider</span>
+                        <Loader v-if="form.processing" class="animate-spin" />
+                    </Button>
                     <!-- <Error v-if="form.errors.email" :message="form.errors.email" /> -->
                 </ModalItem>
             </form>
             <p>Nouveau code: {{ timer }}s</p>
 
-            <p id="canMove">Code non reçu ?
-                <Link @click="refreshTimer()" id="link" as="button" method="put"
-                    href="/2fa" :disabled="!canResend" class="text-blue-500"
-                    :class="{ 'pointer-events-none grayscale': !canResend }">
+            <!-- <p id="canMove">Code non reçu ?
+                <Link @click.prevent="refreshTimer()" id="link" as="button" method="put" href="/2fa" :disabled="!canResend"
+                    class="text-blue-500" :class="{ 'pointer-events-none grayscale': !canResend }">
                 envoyer à nouveau
                 </Link>
-            </p>
+            </p> -->
 
             <p>
                 <Link as="button" method="post" href="logout" class="text-red-500">
@@ -56,6 +60,7 @@ import Input from '@/Components/forms/Input.vue';
 import Button from '@/Components/forms/Button.vue';
 import { Loader } from 'lucide-vue-next';
 import { useAlertStore } from '@/stores/alert';
+import Error from '@/Components/forms/Error.vue';
 
 defineProps({
     status: String
@@ -90,8 +95,8 @@ const moveToNextInput = (currentInputId, nextInputId) => {
 
     currentInput.addEventListener('input', () => {
         if (currentInput.value.length === currentInput.maxLength) {
-           nextInput?.focus()
-            
+            nextInput?.focus()
+
         }
     });
 };
@@ -115,10 +120,20 @@ const refreshTimer = () => {
 
 const submit = () => {
     form.two_factor_code = `${form.digit1}${form.digit2}${form.digit3}${form.digit4}`
-    
+
     form.post('2fa')
 }
 
+window.addEventListener('keydown', (e) => {
+    if(e.key == 'Enter') {
+        if(form.digit1 && form.digit2 && form.digit3 && form.digit4) {
+
+            submit()
+        }
+
+        return null;
+    }
+})
 </script>
 
 <style scoped>
