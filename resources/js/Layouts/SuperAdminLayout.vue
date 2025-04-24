@@ -137,6 +137,24 @@ const toggleNavbarPosition = () => {
 }
 
 
+document.addEventListener('click', (e) => {
+
+let targetName = e.target.localName
+
+let targetParent = e.target.offsetParent
+
+const aside = document.querySelector('aside')
+
+if(targetParent == aside) {
+    aside.classList.remove('toggle')
+}
+
+})
+
+onBeforeUpdate(() => {
+    document.querySelector('aside').classList.remove('toggle')
+})
+
 </script>
 
 <style scoped>

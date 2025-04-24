@@ -23,56 +23,6 @@
                     </li>
                     <li class="flex flex-col">
 
-                        <!-- <details :open="resize.navbarIsResized">
-
-                            <summary class="flex gap-2 items-center text-white"
-                                :class="useIsComponent('Archives') ? styles : ''">
-                                <FolderArchive color="#0074B8" />
-
-                                <span>Mes Dossiers</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960"
-                                    width="30px" fill="#fff">
-                                    <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
-                                </svg>
-                            </summary>
-
-                            <ul class="flex flex-col items-center gap-2 text-white">
-                                <li v-if="user">
-                                    <ul class="text-[14px] text-slate-300">
-                                        <li class="dropdown"
-                                            v-for="folder in user_folders" :title="folder.name">
-                                            <Link :href="'/folders/' + folder.id"
-                                                class=" overflow-hidden whitespace-nowrap inline-block text-ellipsis w-[145px]">
-                                            {{ folder.name }}
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </li>
-
-                                <li v-if="member">
-                                    <ul class="text-[14px] text-slate-300">
-                                        <li class="dropdown"
-                                            v-for="folder in member_folders" :title="folder.name">
-                                            <Link :href="'/folders/' + folder.id"
-                                                class=" overflow-hidden whitespace-nowrap inline-block text-ellipsis w-[145px]">
-                                            {{ folder.name }}
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <button type="button" @click.prevent="foldersModalStore.openModal()"
-                                        class="flex items-center">
-                                        <FolderPlus size="20" class="text-slate-300"
-                                             />
-
-                                        <span>Nouveau dossier</span>
-                                    </button>
-
-                                </li>
-                            </ul>
-                        </details> -->
-
                         <div>
                             <div @click="toggleOpen" class="flex gap-2 items-center text-white cursor-pointer"
                                 :class="useIsComponent('Archives') ? styles : ''">
@@ -235,7 +185,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onUnmounted } from 'vue';
+import { computed, ref, onBeforeUpdate, onUnmounted } from 'vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { useIsComponent } from '@/composables/isComponent';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
@@ -265,6 +215,7 @@ import {
     History,
 } from 'lucide-vue-next';
 
+
 const user = usePage().props.auth.user
 const member = usePage().props.auth.member
 
@@ -272,7 +223,9 @@ const user_folders = usePage().props.auth.user_folders;
 const member_folders = usePage().props.auth.member_folders;
 
 const foldersModalStore = useFoldersModalStore()
+
 const searchModal = useSearchModalStore()
+
 const createMemberModal = useCreateMemberModalStore()
 
 const date = ref(new Date().getFullYear())
@@ -285,15 +238,6 @@ const isAdmin = computed(() => {
     return user.role == 'administrateur'
 })
 
-const toggleNavbarPosition = () => {
-    const aside = document.querySelector('aside')
-
-    aside.classList.toggle('toggle')
-
-}
-
-const message = "Voulez-vous vraiment supprimer ce dossier ainsi que tout le contenu ?"
-
 onUnmounted(() => alert.hideAlert())
 
 const isOpen = ref(true)
@@ -301,6 +245,38 @@ const isOpen = ref(true)
 const toggleOpen = () => {
     isOpen.value = !isOpen.value
 }
+
+onBeforeUpdate(() => {
+    document.querySelector('aside').classList.remove('toggle')
+})
+
+const clicked = ref(false)
+
+const toggleNavbarPosition = () => {
+
+    const aside = document.querySelector('aside')
+
+    aside.classList.toggle('toggle')
+
+    clicked.value = ! clicked.value
+}
+
+const message = "Voulez-vous vraiment supprimer ce dossier ainsi que tout le contenu ?"
+
+
+document.addEventListener('click', (e) => {
+
+    let targetName = e.target.localName
+
+    let targetParent = e.target.offsetParent
+
+    const aside = document.querySelector('aside')
+
+    if(targetParent == aside) {
+        aside.classList.remove('toggle')
+    }
+    
+})
 
 </script>
 
