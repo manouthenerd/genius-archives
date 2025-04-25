@@ -28,7 +28,7 @@
                                 :class="useIsComponent('Archives') ? styles : ''">
                                 <FolderArchive color="#0074B8" />
                                 <span>Mes Dossiers</span>
-                                <ChevronUp />
+                                <ChevronUp/>
                             </div>
 
                             <transition name="slide-fade">
@@ -141,11 +141,9 @@
         <div
             class="px-4 h-screen overflow-scroll rounded-sm w-full size-[50%] bg-gradient-to-r from-slate-100 to-orange-50 via-blue-100 shadow-lg shadow-black">
             <header class="sticky top-0 z-999">
-                <div id="wrapper" class="flex flex-wrap-reverse gap-4 justify-between items-center bg-white p-2">
+                <div id="wrapper" class="flex flex-wrap-reverse gap-4 justify-between items-center bg-[#F8F9FD] p-2">
                     <div class="flex gap-2 items-center">
-                        <button id="navbar-button" @click="toggleNavbarPosition()">
-                            <Menu size="35px" />
-                        </button>
+                            <MenuButton/>
                         <div v-show="false"
                             class="ml-4 bg-gray-200 border-none ring-2 ring-slate-300 shadow-inner rounded-md">
                             <button type="submit" class="h-[40px] text-[14px] w-full flex items-center"
@@ -185,7 +183,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onBeforeUpdate, onUnmounted } from 'vue';
+import { computed, ref, onBeforeUpdate } from 'vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { useIsComponent } from '@/composables/isComponent';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
@@ -198,7 +196,7 @@ import { useCreateMemberModalStore } from '@/stores/createMemberModal';
 import Alert from '@/Components/Alert.vue';
 import ConfirmationModal from '@/Components/modals/ConfirmationModal.vue';
 import { useAlertStore } from '@/stores/alert';
-
+import MenuButton from '@/Components/forms/Menu.vue';
 import {
     LayoutGrid,
     Settings,
@@ -209,7 +207,6 @@ import {
     FolderPlus,
     ChevronUp,
     LogOut,
-    Menu,
     Search,
     UsersRound,
     History,
@@ -238,7 +235,7 @@ const isAdmin = computed(() => {
     return user.role == 'administrateur'
 })
 
-onUnmounted(() => alert.hideAlert())
+onBeforeUpdate(() => alert.hideAlert())
 
 const isOpen = ref(true)
 
@@ -249,17 +246,6 @@ const toggleOpen = () => {
 onBeforeUpdate(() => {
     document.querySelector('aside').classList.remove('toggle')
 })
-
-const clicked = ref(false)
-
-const toggleNavbarPosition = () => {
-
-    const aside = document.querySelector('aside')
-
-    aside.classList.toggle('toggle')
-
-    clicked.value = ! clicked.value
-}
 
 const message = "Voulez-vous vraiment supprimer ce dossier ainsi que tout le contenu ?"
 
@@ -272,10 +258,10 @@ document.addEventListener('click', (e) => {
 
     const aside = document.querySelector('aside')
 
-    if(targetParent == aside) {
+    if (targetParent == aside) {
         aside.classList.remove('toggle')
     }
-    
+
 })
 
 </script>
@@ -338,13 +324,6 @@ li button:hover {
         left: -230px;
     }
 
-}
-
-@media screen and (min-width: 520px) {
-
-    #navbar-button {
-        display: none;
-    }
 }
 
 @media screen and (max-width: 600px) {

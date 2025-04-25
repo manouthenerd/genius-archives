@@ -72,9 +72,7 @@
 
                     <div id="wrapper" class="flex flex-wrap-reverse gap-4 justify-between items-center bg-white p-2">
                         <div class="flex gap-2 items-center">
-                            <button id="navbar-button" @click="toggleNavbarPosition()">
-                                <Menu size="35px" />
-                            </button>
+                            <MenuButton id="navbar-button"/>
                             <div v-show="false"
                                 class="ml-4 bg-gray-200 border-none ring-2 ring-slate-300 shadow-inner rounded-md">
                                 <button type="submit" class="h-[40px] text-[14px] w-full flex items-center"
@@ -111,11 +109,11 @@ import { useIsComponent } from '@/composables/isComponent';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
 import { useSearchModalStore } from '@/stores/searchModal';
 import Alert from '@/Components/Alert.vue';
+import MenuButton from '@/Components/forms/Menu.vue';
 import {
     LayoutGrid,
     Settings,
     LogOut,
-    Menu,
     Search,
     Key,
     BookKey,
@@ -128,13 +126,6 @@ const searchModal = useSearchModalStore()
 const date = ref(new Date().getFullYear())
 
 const styles = "text-[#0074B8] font-bold"
-
-const toggleNavbarPosition = () => {
-    const aside = document.querySelector('aside')
-
-    aside.classList.toggle('toggle')
-
-}
 
 
 document.addEventListener('click', (e) => {

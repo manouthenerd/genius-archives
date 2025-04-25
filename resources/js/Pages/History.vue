@@ -6,9 +6,6 @@
             <tr class="whitespace-nowrap">
                 
                 <th scope="col" class="px-6 py-3">
-                    <input type="checkbox" name="checked" id="checked">
-                </th>
-                <th scope="col" class="px-6 py-3">
                    Membre
                 </th>
                 <th scope="col" class="px-6 py-3">

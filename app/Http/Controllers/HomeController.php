@@ -104,10 +104,10 @@ class HomeController extends Controller
             default:
 
                 return Inertia::render('Home', [
-                    'files_by_extension' => $files_by_type,
-                    'members_disk_space' => $members_disk_space,
-                    'user_disk_space'    => $user_disk_space,
-                    'members_history'    => $members_history
+                    'files_by_extension' => $files_by_type ?? [],
+                    'members_disk_space' => $members_disk_space ?? [],
+                    'user_disk_space'    => $user_disk_space ?? [],
+                    'members_history'    => $members_history ?? []
                 ]);
 
                 break;

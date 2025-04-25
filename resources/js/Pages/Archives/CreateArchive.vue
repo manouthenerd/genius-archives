@@ -38,7 +38,7 @@
                                     :key="folder.id"
                                 >
                                     {{ folder.name }}
-                                    <span class="text-xs italic">(dossier {{ folder.access_level }})</span>
+                                    <i class="text-xs italic">(dossier {{ folder.access_level }})</i>
                                 </option>
                             </select>
                         </div>
@@ -99,6 +99,7 @@ import { useFileUploadModalStore } from '@/stores/fileUploadModal';
 import FileUploadModal from '@/Components/modals/FileUploadModal.vue';
 import { computed, onMounted, ref } from 'vue';
 import Button from '@/Components/forms/Button.vue';
+import { useAlertStore } from '@/stores/alert';
 
 defineOptions({
     layout: MainLayout
@@ -109,6 +110,8 @@ defineProps({
 })
 
 let archive = null;
+
+const alert = useAlertStore()
 
 onMounted(() => archive = document.querySelector('#archive'))
 
@@ -152,11 +155,13 @@ const previewFile = (file) => {
 
 
 const submit = () => {
+    alert.setMessage('Fichier ajouté avec succès🎉')
     form.post(usePage().url, {
         forceFormData: true,
         onSuccess: () => {
             form.reset();
             archive.value = ''
+            alert.showAlert()
         },
     })
 }
