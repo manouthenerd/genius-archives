@@ -14,7 +14,8 @@
                 <div v-show="files_by_extension.length" style="width: 250px; height: 250px;" class="my-4">
                     <canvas id="first-canvas"></canvas>
                 </div>
-                <div v-if="! files_by_extension.length" class="p-2 rounded max-[896px]:w-full grid justify-items-center space-y-2 w-[320px] h-[312px] bg-[#ffffff40]">
+                <div v-if="!files_by_extension.length"
+                    class="p-2 rounded max-[896px]:w-full grid justify-items-center space-y-2 w-[320px] h-[312px] bg-[#ffffff40]">
                     <Folder />
                     <p class="font-bold text-[12px]">Vous n'avez pas encore ajouté d'archives</p>
                     <p class="grid text-center">
@@ -27,28 +28,34 @@
                         </Link>
                     </div>
                 </div>
-                
-                <div v-show="userExists() && members_disk_space.length" style="width: 250px; height: 250px;" class="my-4">
+
+                <div v-show="userExists() && members_disk_space.length" style="width: 250px; height: 250px;"
+                    class="my-4">
                     <canvas id="second-canvas"></canvas>
                 </div>
-                <div v-if="! members_disk_space.length && userExists()" class="bg-[#ffffff40] p-2 max-[896px]:w-full rounded grid place-content-center content-start w-[320px] h-[312px]">
-                    <div class="bg-[content-box] p-2 space-y-2 rounded grid place-content-center">
-                        <div class="donut-container">
-                            <div class="donut-ring"></div>
-                            <div class="donut-center-text">Aucune donnée<br>pour l'instant</div>
-                        </div>
-                        <p class="font-bold text-[12px]">Vous n'avez pas encore ajouté de membres</p>
-                        <p class="grid text-center">
-                            <span> Commencé en cliquant sur</span>
-                            <span><i>«Ajouter un nouveau membre»</i></span>
-                        </p>
-                        <div>
-                            <button @click="memberModal.openModal" class="bg-[#215C91] text-center text-white p-1 rounded">
-                            + Ajouter un nouveau membre
-                            </button>
+                <transition>
+                    <div v-if="!members_disk_space.length && userExists()"
+                        :class="{ 'hidden': !folderModal.isClosed || !memberModal.isClosed }"
+                        class="bg-[#ffffff40] p-2 max-[896px]:w-full rounded grid place-content-center content-start w-[320px] h-[312px]">
+                        <div class="bg-[content-box] p-2 space-y-2 rounded grid place-content-center">
+                            <div class="donut-container">
+                                <div class="donut-ring"></div>
+                                <div class="donut-center-text">Aucune donnée<br>pour l'instant</div>
+                            </div>
+                            <p class="font-bold text-[12px]">Vous n'avez pas encore ajouté de membres</p>
+                            <p class="grid text-center">
+                                <span> Commencé en cliquant sur</span>
+                                <span><i>«Ajouter un nouveau membre»</i></span>
+                            </p>
+                            <div>
+                                <button @click="memberModal.openModal"
+                                    class="bg-[#215C91] text-center text-white p-1 rounded">
+                                    + Ajouter un nouveau membre
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </transition>
             </div>
 
             <!-- History -->
@@ -103,6 +110,7 @@ import { usePage, Link } from "@inertiajs/vue3";
 import MainLayout from "@/Layouts/MainLayout.vue";
 import Folder from "@/Components/Folder.vue";
 import { useCreateMemberModalStore } from "@/stores/createMemberModal";
+import { useFoldersModalStore } from "@/stores/foldersModal";
 
 defineOptions({
     layout: MainLayout
@@ -116,6 +124,7 @@ const props = defineProps({
 })
 
 const memberModal = useCreateMemberModalStore()
+const folderModal = useFoldersModalStore()
 
 const userExists = () => usePage().props.auth.user.name;
 
