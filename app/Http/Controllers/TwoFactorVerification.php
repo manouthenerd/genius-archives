@@ -13,7 +13,7 @@ class TwoFactorVerification extends Controller
     public static function generateTwoFactorCode(User|Member $user)
     {
         $user->two_factor_code = rand(1000, 9999);
-        $user->two_factor_expires_at = Carbon::now()->addMinutes(15);
+        $user->two_factor_expires_at = now()->addMinutes(15);
         $user->save();
 
         Mail::to($user->email)->send(new Send2faVerificationCode($user->name, $user->two_factor_code));
