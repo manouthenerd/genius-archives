@@ -3,8 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\Member;
-use App\Models\AccessKey;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
